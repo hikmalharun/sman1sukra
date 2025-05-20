@@ -107,7 +107,7 @@
             <div class="container">
                 <div class="row gy-4">
                     <div class="col-lg-12 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
-                        <h1>Selamat Data di <span>SMAN 1 SUKRA</span></h1>
+                        <h1>Selamat Datang di <span>SMAN 1 SUKRA</span></h1>
                         <p>Gerbang Menuju Masa Depan Yang Gemilang</p>
                         <div class="d-flex">
                             <a href="#about" class="btn-get-started">Get Started</a>
