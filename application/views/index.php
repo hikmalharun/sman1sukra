@@ -9,8 +9,8 @@
     <meta name="keywords" content="">
 
     <!-- Favicons -->
-    <link href="<?php echo base_url(); ?>assets/img/jabar.png" rel="icon">
-    <link href="<?php echo base_url(); ?>assets/img/jabar.png" rel="apple-touch-icon">
+    <link href="<?php echo base_url(); ?>assets/img/logo_sman1sukra.png" rel="icon">
+    <link href="<?php echo base_url(); ?>assets/img/logo_sman1sukra.png" rel="apple-touch-icon">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -26,6 +26,7 @@
 
     <!-- Main CSS File -->
     <link href="<?php echo base_url(); ?>assets/css/main.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>assets/css/custom.css" rel="stylesheet">
 
     <!-- =======================================================
   * Template Name: BizLand
@@ -60,15 +61,15 @@
             <div class="container position-relative d-flex align-items-center justify-content-between">
                 <a href="<?php echo base_url(); ?>" class="logo d-flex align-items-center">
                     <!-- Uncomment the line below if you also wish to use an image logo -->
-                    <!-- <img src="<?php echo base_url(); ?>assets/img/logo.png" alt=""> -->
+                    <!-- <img src="<?php echo base_url(); ?>assets/img/brand_smantura.png" alt="logo"> -->
                     <h1 class="sitename">SMAN 1 SUKRA</h1>
                 </a>
 
                 <nav id="navmenu" class="navmenu">
                     <ul>
                         <li><a href="#hero" class="active">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#services">Services</a></li>
+                        <li><a href="#profile">Profile</a></li>
+                        <li><a href="#pmb">PMB</a></li>
                         <li><a href="#portfolio">Portfolio</a></li>
                         <li><a href="#team">Team</a></li>
                         <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -105,72 +106,63 @@
         <section id="hero" class="hero section light-background">
 
             <div class="container">
-                <div class="row gy-4">
-                    <div class="col-lg-12 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
+                <div class="row gy-4 d-flex">
+                    <div class="col-lg-2 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
+                        <img src="<?php echo base_url('assets/img/logo_sman1sukra.png'); ?>" alt="brand" style="width: 200px;">
+                    </div>
+                    <div class="col-lg-10 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
                         <h1>Selamat Datang di <span>SMAN 1 SUKRA</span></h1>
                         <p>Gerbang Menuju Masa Depan Yang Gemilang</p>
-                        <div class="d-flex">
-                            <a href="#about" class="btn-get-started">Get Started</a>
-                            <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
-                        </div>
                     </div>
                 </div>
             </div>
 
-        </section><!-- /Hero Section -->
+        </section>
+        <!-- /Hero Section -->
 
         <!-- Featured Services Section -->
         <section id="featured-services" class="featured-services section">
 
+            <!-- Section Title -->
+            <div class="container section-title" data-aos="fade-up">
+                <p><span>Sambutan Kepala</span> <span class="description-title">SMAN 1 SUKRA</span></p>
+            </div><!-- End Section Title -->
+
             <div class="container">
-
-                <div class="row gy-4">
-
-                    <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
-                        <div class="service-item position-relative">
-                            <div class="icon"><i class="bi bi-activity icon"></i></div>
-                            <h4><a href="" class="stretched-link">Lorem Ipsum</a></h4>
-                            <p>Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi</p>
+                <div class="row kepsek">
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card" style="border: none;">
+                            <div class="card-body">
+                                <img src="<?php echo base_url('assets/img/kepsek.png'); ?>" alt="kepsek" style="width: 80%;">
+                                <p>H. MAMAN RACHMAN, S.Pd., M.Pmat.</p>
+                            </div>
                         </div>
-                    </div><!-- End Service Item -->
-
-                    <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
-                        <div class="service-item position-relative">
-                            <div class="icon"><i class="bi bi-bounding-box-circles icon"></i></div>
-                            <h4><a href="" class="stretched-link">Sed ut perspici</a></h4>
-                            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>
+                    </div>
+                    <!-- End Service Item -->
+                    <div class="col-md-8" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card" style="border: none;">
+                            <div class="card-body" style="text-align: justify;">
+                                Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas karunia dan hidayah-Nya, sehingga kita semua dapat membaktikan segala hal yang kita miliki untuk kemajuan dunia pendidikan. Apapun bentuk dan sumbangsih yang kita berikan, jika dilandasi niat yang tulus tanpa memandang imbalan apapun akan menghasilkan mahakarya yang agung untuk bekal kita dan generasi setelah kita. Pendidikan adalah harga mati untuk menjadi pondasi bangsa dan negara dalam menghadapi perkembangan zaman. Hal ini seiring dengan penguasaan teknologi untuk dimanfaatkan sebaik mungkin, sehingga menciptakan iklim kondusif dalam ranah keilmuan. Dengan konsep yang kontekstual dan efektif, kami mengejewantahkan nilai-nilai pendidikan yang tertuang dalam visi misi SMA NEGERI 1 SUKRA, sebagai panduan hukum dalam menjabarkan tujuan hakiki pendidikan.
+                                <br>
+                                Dalam sebuah sistem ketata kelolaan Sekolah Berbasis Manajemen, kami berusaha terus meningkatkan kinerja dan profesionalisme demi terwujudnya pelayanan prima dalam cakupan Lembaga Pendidikan terutama di SMA NEGERI 1 SUKRA ini. Kami sudah mulai menerapkan sistem Teknologi Komputerisasi agar transparansi pengelolaan pendidikan terjaga optimalisasinya. Sebuah sistem akan bermanfaat dan berdaya guna tinggi jika didukung dan direalisasikan oleh semua komponen yang berkompeten di SMA NEGERI 1 SUKRA baik sistem manajerial, akademik, pelayanan publik, prestasi,moralitas dan semua hal yang berinteraksi di dalamnya. Alhamdulilah peningkatan tersebut dapat dilihat dari data-data kepegawaian dan karya-karya nyata yang telah dihasilkan walaupun masih ada kelemahan yang terus kami treatment dengan menyeimbangkan hasil kinerja dan prize yang diberikan. Mudah-mudahan semua yang kita berikan untuk kemajuan dan keajegan nilai-nilai pendidikan dapat terus meningkat.
+                                <br>
+                                Secara pribadi saya mohon maaf, jika pemenuhan tuntutan dan kinerja yang saya lakukan masih ada kelemahan. Oleh karena itu, bantuan dan kerjasama dari berbagai pihak untuk optimalisasi mutu dan kualitas pendidikan sangat saya harapkan. Mudah-mudahan dalam tiap langkah dan nafas kita menciptakan nilai jual yang tinggi bagi keilmuan dan nilai hakiki di hadapan Tuhan Yang Maha Esa. Demikian sambutan ini saya sampaikan, ditutup dengan pesan moral dan keilmuan bagi kita semua.
+                            </div>
                         </div>
-                    </div><!-- End Service Item -->
-
-                    <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
-                        <div class="service-item position-relative">
-                            <div class="icon"><i class="bi bi-calendar4-week icon"></i></div>
-                            <h4><a href="" class="stretched-link">Magni Dolores</a></h4>
-                            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p>
-                        </div>
-                    </div><!-- End Service Item -->
-
-                    <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="400">
-                        <div class="service-item position-relative">
-                            <div class="icon"><i class="bi bi-broadcast icon"></i></div>
-                            <h4><a href="" class="stretched-link">Nemo Enim</a></h4>
-                            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis</p>
-                        </div>
-                    </div><!-- End Service Item -->
-
+                    </div>
+                    <!-- End Service Item -->
                 </div>
-
             </div>
 
         </section><!-- /Featured Services Section -->
 
         <!-- About Section -->
-        <section id="about" class="about section light-background">
+        <section id="profile" class="about section light-background">
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
-                <h2>About</h2>
-                <p><span>Find Out More</span> <span class="description-title">About Us</span></p>
+                <h2>Profile</h2>
+                <p><span>Selayang Pandang</span> <span class="description-title">SMAN 1 SUKRA</span></p>
             </div><!-- End Section Title -->
 
             <div class="container">
@@ -178,37 +170,74 @@
                 <div class="row gy-3">
 
                     <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                        <img src="<?php echo base_url(); ?>assets/img/about.jpg" alt="" class="img-fluid">
+                        <img src="<?php echo base_url(); ?>assets/img/about-x.jpg" alt="" class="img-fluid">
                     </div>
 
                     <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
                         <div class="about-content ps-0 ps-lg-3">
-                            <h3>Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.</h3>
-                            <p class="fst-italic">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                                magna aliqua.
+                            <h3>Profile Singkat SMA Negeri 1 Sukra</h3>
+                            <p style="text-align: justify;">
+                                SMA Negeri 1 Sukra adalah sebuah Sekolah Menengah Atas Negeri yang berada di Jalan Raya Sukra - Ujung Gebang Km. 0,5 Desa Sukra Kecamatan Sukra Kabupaten Indramayu. Sekolah ini didirikan berdasarkan Keputusan Pemerintah Daerah Kabupaten Indramayu nomor : 004/PAN-USB/VII/2016 pada tanggal 21 Juli 2016.
+                                Berikut secara rinci profile SMA Negeri 1 Sukra :
                             </p>
                             <ul>
-                                <li>
-                                    <i class="bi bi-diagram-3"></i>
-                                    <div>
-                                        <h4>Ullamco laboris nisi ut aliquip consequat</h4>
-                                        <p>Magni facilis facilis repellendus cum excepturi quaerat praesentium libre trade</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <li>
+                                            <i class="bi bi-textarea-resize"></i>
+                                            <div>
+                                                <h4>Luas Tanah</h4>
+                                                <p>8.141 meter pesegi</p>
+                                            </div>
+                                        </li>
                                     </div>
-                                </li>
-                                <li>
-                                    <i class="bi bi-fullscreen-exit"></i>
-                                    <div>
-                                        <h4>Magnam soluta odio exercitationem reprehenderi</h4>
-                                        <p>Quo totam dolorum at pariatur aut distinctio dolorum laudantium illo direna pasata redi</p>
+                                    <div class="col-md-6">
+                                        <li>
+                                            <i class="bi bi-houses"></i>
+                                            <div>
+                                                <h4>Luas Bangunan</h4>
+                                                <p>1.920 meter persegi</p>
+                                            </div>
+                                        </li>
                                     </div>
-                                </li>
+                                    <div class="col-md-6">
+                                        <li>
+                                            <i class="bi bi-houses"></i>
+                                            <div>
+                                                <h4>Ruang Kelas</h4>
+                                                <p>12 rombel</p>
+                                            </div>
+                                        </li>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <li>
+                                            <i class="bi bi-door-closed"></i>
+                                            <div>
+                                                <h4>Toilet Siswa</h4>
+                                                <p>14 ruang</p>
+                                            </div>
+                                        </li>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <li>
+                                            <i class="bi bi-easel2"></i>
+                                            <div>
+                                                <h4>Ruang Laboratorium</h4>
+                                                <p>3 ruang</p>
+                                            </div>
+                                        </li>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <li>
+                                            <i class="bi bi-easel2"></i>
+                                            <div>
+                                                <h4>Jumlah PTK</h4>
+                                                <p>24 pegawai</p>
+                                            </div>
+                                        </li>
+                                    </div>
+                                </div>
                             </ul>
-                            <p>
-                                Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                                velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                                culpa qui officia deserunt mollit anim id est laborum
-                            </p>
                         </div>
 
                     </div>
@@ -218,69 +247,6 @@
 
         </section><!-- /About Section -->
 
-        <!-- Skills Section -->
-        <section id="skills" class="skills section">
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-                <div class="row skills-content skills-animation">
-
-                    <div class="col-lg-6">
-
-                        <div class="progress">
-                            <span class="skill"><span>HTML</span> <i class="val">100%</i></span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div><!-- End Skills Item -->
-
-                        <div class="progress">
-                            <span class="skill"><span>CSS</span> <i class="val">90%</i></span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div><!-- End Skills Item -->
-
-                        <div class="progress">
-                            <span class="skill"><span>JavaScript</span> <i class="val">75%</i></span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div><!-- End Skills Item -->
-
-                    </div>
-
-                    <div class="col-lg-6">
-
-                        <div class="progress">
-                            <span class="skill"><span>PHP</span> <i class="val">80%</i></span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div><!-- End Skills Item -->
-
-                        <div class="progress">
-                            <span class="skill"><span>WordPress/CMS</span> <i class="val">90%</i></span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div><!-- End Skills Item -->
-
-                        <div class="progress">
-                            <span class="skill"><span>Photoshop</span> <i class="val">55%</i></span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div><!-- End Skills Item -->
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section><!-- /Skills Section -->
-
         <!-- Stats Section -->
         <section id="stats" class="stats section">
 
@@ -289,34 +255,46 @@
                 <div class="row gy-4">
 
                     <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-                        <i class="bi bi-emoji-smile"></i>
+                        <i class="bi bi-person-lines-fill"></i>
                         <div class="stats-item">
-                            <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
-                            <p>Happy Clients</p>
+                            <div class="d-flex" style="padding-left: 33%;">
+                                <span data-purecounter-start="0" data-purecounter-end="100" data-purecounter-duration="1" class="purecounter"></span>
+                                <span>%</span>
+                            </div>
+                            <p>Penerimaan Murid Baru</p>
                         </div>
                     </div><!-- End Stats Item -->
 
                     <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-                        <i class="bi bi-journal-richtext"></i>
+                        <i class="bi bi-mortarboard"></i>
                         <div class="stats-item">
-                            <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1" class="purecounter"></span>
-                            <p>Projects</p>
+                            <div class="d-flex" style="padding-left: 33%;">
+                                <span data-purecounter-start="0" data-purecounter-end="100" data-purecounter-duration="1" class="purecounter"></span>
+                                <span>%</span>
+                            </div>
+                            <p>Jumlah Murid Lulus</p>
                         </div>
                     </div><!-- End Stats Item -->
 
                     <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-                        <i class="bi bi-headset"></i>
+                        <i class="bi bi-palette2"></i>
                         <div class="stats-item">
-                            <span data-purecounter-start="0" data-purecounter-end="1463" data-purecounter-duration="1" class="purecounter"></span>
-                            <p>Hours Of Support</p>
+                            <div class="d-flex" style="padding-left: 36%;">
+                                <span data-purecounter-start="0" data-purecounter-end="35" data-purecounter-duration="1" class="purecounter"></span>
+                                <span>%</span>
+                            </div>
+                            <p>Melanjutkan Perguruan Tinggi</p>
                         </div>
                     </div><!-- End Stats Item -->
 
                     <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
                         <i class="bi bi-people"></i>
                         <div class="stats-item">
-                            <span data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1" class="purecounter"></span>
-                            <p>Hard Workers</p>
+                            <div class="d-flex" style="padding-left: 36%;">
+                                <span data-purecounter-start="0" data-purecounter-end="65" data-purecounter-duration="1" class="purecounter"></span>
+                                <span>%</span>
+                            </div>
+                            <p>Melanjutkan Dunia Kerja</p>
                         </div>
                     </div><!-- End Stats Item -->
 
@@ -326,146 +304,157 @@
 
         </section><!-- /Stats Section -->
 
-        <!-- Clients Section -->
-        <section id="clients" class="clients section light-background">
-
-            <div class="container">
-
-                <div class="swiper init-swiper">
-                    <script type="application/json" class="swiper-config">
-                        {
-                            "loop": true,
-                            "speed": 600,
-                            "autoplay": {
-                                "delay": 5000
-                            },
-                            "slidesPerView": "auto",
-                            "pagination": {
-                                "el": ".swiper-pagination",
-                                "type": "bullets",
-                                "clickable": true
-                            },
-                            "breakpoints": {
-                                "320": {
-                                    "slidesPerView": 2,
-                                    "spaceBetween": 40
-                                },
-                                "480": {
-                                    "slidesPerView": 3,
-                                    "spaceBetween": 60
-                                },
-                                "640": {
-                                    "slidesPerView": 4,
-                                    "spaceBetween": 80
-                                },
-                                "992": {
-                                    "slidesPerView": 6,
-                                    "spaceBetween": 120
-                                }
-                            }
-                        }
-                    </script>
-                    <div class="swiper-wrapper align-items-center">
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-1.png" class="img-fluid" alt=""></div>
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-2.png" class="img-fluid" alt=""></div>
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-3.png" class="img-fluid" alt=""></div>
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-4.png" class="img-fluid" alt=""></div>
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-5.png" class="img-fluid" alt=""></div>
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-6.png" class="img-fluid" alt=""></div>
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-7.png" class="img-fluid" alt=""></div>
-                        <div class="swiper-slide"><img src="<?php echo base_url(); ?>assets/img/clients/client-8.png" class="img-fluid" alt=""></div>
-                    </div>
-                </div>
-
-            </div>
-
-        </section><!-- /Clients Section -->
-
         <!-- Services Section -->
-        <section id="services" class="services section">
+        <section id="pmb" class="services section">
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
-                <h2>Services</h2>
-                <p><span>Check Our</span> <span class="description-title">Services</span></p>
+                <h2>Penerimaan Murid Baru</h2>
+                <p><span>Tahun Pelajaran</span> <span class="description-title">2025/2026</span></p>
             </div><!-- End Section Title -->
 
             <div class="container">
 
                 <div class="row gy-4">
 
+                    <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/spmb.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/spmb.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/brosur.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/brosur.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
                     <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                         <div class="service-item position-relative">
-                            <div class="icon">
-                                <i class="bi bi-activity"></i>
-                            </div>
-                            <a href="#" class="stretched-link">
-                                <h3>Nesciunt Mete</h3>
+                            <a href="<?php echo base_url('assets/img/spmb/dayatampung.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/dayatampung.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
                             </a>
-                            <p>Provident nihil minus qui consequatur non omnis maiores. Eos accusantium minus dolores iure perferendis tempore et consequatur.</p>
                         </div>
                     </div><!-- End Service Item -->
-
-                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                         <div class="service-item position-relative">
-                            <div class="icon">
-                                <i class="bi bi-broadcast"></i>
-                            </div>
-                            <a href="#" class="stretched-link">
-                                <h3>Eosle Commodi</h3>
+                            <a href="<?php echo base_url('assets/img/spmb/tahap1.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/tahap1.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
                             </a>
-                            <p>Ut autem aut autem non a. Sint sint sit facilis nam iusto sint. Libero corrupti neque eum hic non ut nesciunt dolorem.</p>
                         </div>
                     </div><!-- End Service Item -->
-
-                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                         <div class="service-item position-relative">
-                            <div class="icon">
-                                <i class="bi bi-easel"></i>
-                            </div>
-                            <a href="#" class="stretched-link">
-                                <h3>Ledo Markt</h3>
+                            <a href="<?php echo base_url('assets/img/spmb/tahap2.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/tahap2.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
                             </a>
-                            <p>Ut excepturi voluptatem nisi sed. Quidem fuga consequatur. Minus ea aut. Vel qui id voluptas adipisci eos earum corrupti.</p>
                         </div>
                     </div><!-- End Service Item -->
-
-                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                         <div class="service-item position-relative">
-                            <div class="icon">
-                                <i class="bi bi-bounding-box-circles"></i>
-                            </div>
-                            <a href="#" class="stretched-link">
-                                <h3>Asperiores Commodit</h3>
+                            <a href="<?php echo base_url('assets/img/spmb/domisili.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/domisili.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
                             </a>
-                            <p>Non et temporibus minus omnis sed dolor esse consequatur. Cupiditate sed error ea fuga sit provident adipisci neque.</p>
-                            <a href="#" class="stretched-link"></a>
                         </div>
                     </div><!-- End Service Item -->
-
-                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                         <div class="service-item position-relative">
-                            <div class="icon">
-                                <i class="bi bi-calendar4-week"></i>
-                            </div>
-                            <a href="#" class="stretched-link">
-                                <h3>Velit Doloremque</h3>
+                            <a href="<?php echo base_url('assets/img/spmb/afirmasi.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/afirmasi.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
                             </a>
-                            <p>Cumque et suscipit saepe. Est maiores autem enim facilis ut aut ipsam corporis aut. Sed animi at autem alias eius labore.</p>
-                            <a href="#" class="stretched-link"></a>
                         </div>
                     </div><!-- End Service Item -->
-
-                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                         <div class="service-item position-relative">
-                            <div class="icon">
-                                <i class="bi bi-chat-square-text"></i>
-                            </div>
-                            <a href="#" class="stretched-link">
-                                <h3>Dolori Architecto</h3>
+                            <a href="<?php echo base_url('assets/img/spmb/mutasi.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/mutasi.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
                             </a>
-                            <p>Hic molestias ea quibusdam eos. Fugiat enim doloremque aut neque non et debitis iure. Corrupti recusandae ducimus enim.</p>
-                            <a href="#" class="stretched-link"></a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/nilairapor.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/nilairapor.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/kejuaraan.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/kejuaraan.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratumum.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratumum.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratkhusus1.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratkhusus1.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratkhusus2.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratkhusus2.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratkhusus3.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratkhusus3.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratketm.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratketm.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratpdbk.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratpdbk.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratmutasi.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratmutasi.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/syaratprestasi.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/syaratprestasi.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/jadwaltahap1.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/jadwaltahap1.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
+                        </div>
+                    </div><!-- End Service Item -->
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item position-relative">
+                            <a href="<?php echo base_url('assets/img/spmb/jadwaltahap2.png'); ?>" data-gallery="portfolio-gallery-app" class="glightbox preview-link">
+                                <img src="<?php echo base_url('assets/img/spmb/jadwaltahap2.png') ?>" alt="spmb" style="width: 100%; margin-top: -60px; margin-bottom: -60px;">
+                            </a>
                         </div>
                     </div><!-- End Service Item -->
 
@@ -478,110 +467,44 @@
         <!-- Testimonials Section -->
         <section id="testimonials" class="testimonials section dark-background">
 
-            <img src="<?php echo base_url(); ?>assets/img/testimonials-bg.jpg" class="testimonials-bg" alt="">
+            <img src="<?php echo base_url('assets/img/header-bg.jpg'); ?>" class="testimonials-bg" alt="">
 
             <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-                <div class="swiper init-swiper">
-                    <script type="application/json" class="swiper-config">
-                        {
-                            "loop": true,
-                            "speed": 600,
-                            "autoplay": {
-                                "delay": 5000
-                            },
-                            "slidesPerView": "auto",
-                            "pagination": {
-                                "el": ".swiper-pagination",
-                                "type": "bullets",
-                                "clickable": true
-                            }
-                        }
-                    </script>
-                    <div class="swiper-wrapper">
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-item">
-                                <img src="<?php echo base_url(); ?>assets/img/testimonials/testimonials-1.jpg" class="testimonial-img" alt="">
-                                <h3>Saul Goodman</h3>
-                                <h4>Ceo &amp; Founder</h4>
-                                <div class="stars">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                <div class="container section-title" data-aos="fade-up">
+                    <h2 style="color: #ffffff;">Tanya Seputar SPMB</h2>
+                    <p><span>Tahun Pelajaran</span> <span class="description-title">2025/2026</span></p>
+                </div><!-- End Section Title -->
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <form action="<?php echo base_url('home/kirim_pesan'); ?>" method="POST">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group">
+                                        <label for="nama">Nama</label>
+                                        <input type="text" class="form-control" name="nama" id="nama" style="background-color: transparent; color: #ffffff;" required>
+                                    </div>
                                 </div>
-                                <p>
-                                    <i class="bi bi-quote quote-icon-left"></i>
-                                    <span>Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.</span>
-                                    <i class="bi bi-quote quote-icon-right"></i>
-                                </p>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-item">
-                                <img src="<?php echo base_url(); ?>assets/img/testimonials/testimonials-2.jpg" class="testimonial-img" alt="">
-                                <h3>Sara Wilsson</h3>
-                                <h4>Designer</h4>
-                                <div class="stars">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group">
+                                        <label for="nomor_wa">Nomor Whatsapp</label>
+                                        <input type="number" class="form-control" name="nomor_wa" id="nomor_wa" style="background-color: transparent; color: #ffffff;" required>
+                                    </div>
                                 </div>
-                                <p>
-                                    <i class="bi bi-quote quote-icon-left"></i>
-                                    <span>Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.</span>
-                                    <i class="bi bi-quote quote-icon-right"></i>
-                                </p>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-item">
-                                <img src="<?php echo base_url(); ?>assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt="">
-                                <h3>Jena Karlis</h3>
-                                <h4>Store Owner</h4>
-                                <div class="stars">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-group">
+                                        <label for="pesan">Pesan</label>
+                                        <textarea class="form-control" name="pesan" id="pesan" style="background-color: transparent; color: #ffffff;" required></textarea>
+                                    </div>
                                 </div>
-                                <p>
-                                    <i class="bi bi-quote quote-icon-left"></i>
-                                    <span>Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.</span>
-                                    <i class="bi bi-quote quote-icon-right"></i>
-                                </p>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-item">
-                                <img src="<?php echo base_url(); ?>assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="">
-                                <h3>Matt Brandon</h3>
-                                <h4>Freelancer</h4>
-                                <div class="stars">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-outline-primary float-end" style="color: #ffffff; border: 1px solid #ffffff;"><i class="bi bi-send-plus"></i> Kirim</button>
                                 </div>
-                                <p>
-                                    <i class="bi bi-quote quote-icon-left"></i>
-                                    <span>Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.</span>
-                                    <i class="bi bi-quote quote-icon-right"></i>
-                                </p>
                             </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-item">
-                                <img src="<?php echo base_url(); ?>assets/img/testimonials/testimonials-5.jpg" class="testimonial-img" alt="">
-                                <h3>John Larson</h3>
-                                <h4>Entrepreneur</h4>
-                                <div class="stars">
-                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                                </div>
-                                <p>
-                                    <i class="bi bi-quote quote-icon-left"></i>
-                                    <span>Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid.</span>
-                                    <i class="bi bi-quote quote-icon-right"></i>
-                                </p>
-                            </div>
-                        </div><!-- End testimonial item -->
-
+                        </form>
                     </div>
-                    <div class="swiper-pagination"></div>
+                    <div class="col-md-2"></div>
                 </div>
 
             </div>
@@ -1072,14 +995,16 @@
         <div class="container footer-top">
             <div class="row gy-4">
                 <div class="col-lg-4 col-md-6 footer-about">
-                    <a href="index.html" class="d-flex align-items-center">
-                        <span class="sitename">BizLand</span>
+                    <a href="<?php echo base_url(); ?>" class="d-flex align-items-center">
+                        <span class="sitename">
+                            <img src="<?php echo base_url('assets/img/brand_smantura.png'); ?>" alt="brand" style="width: 120px;">
+                        </span>
                     </a>
                     <div class="footer-contact pt-3">
-                        <p>A108 Adam Street</p>
-                        <p>New York, NY 535022</p>
-                        <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-                        <p><strong>Email:</strong> <span>info@example.com</span></p>
+                        <p>Jln. Raya Sukra-Ujung Gebang Km. 0,5 Sukra Kecamatan Sukra</p>
+                        <p>Kabupaten Indramayu Provinsi Jawa Barat Kode Pos 45256</p>
+                        <p class="mt-3"><strong><i class="bi bi-phone"></i></strong> <span href="tel:6282347150464">(0234) 7150464</span></p>
+                        <p><strong><i class="bi bi-envelope"></i></strong> <span href="mailto:info@sman1sukra.sch.id">info@sman1sukra.sch.id</span></p>
                     </div>
                 </div>
 
