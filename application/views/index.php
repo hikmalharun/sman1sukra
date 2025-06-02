@@ -67,7 +67,7 @@
 
                 <nav id="navmenu" class="navmenu">
                     <ul>
-                        <li><a href="#home" class="active">Home</a></li>
+                        <li><a href="#sambutan">Home</a></li>
                         <li><a href="#profile">Profile</a></li>
                         <li><a href="#spmb">SPMB</a></li>
                         <li><a href="#tanya_spmb">Tanya Seputar SPMB</a></li>
@@ -103,7 +103,7 @@
         <!-- /Hero Section -->
 
         <!-- Featured Services Section -->
-        <section id="featured-services" class="featured-services section">
+        <section id="sambutan" class="featured-services section">
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
