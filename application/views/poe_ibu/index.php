@@ -50,10 +50,54 @@
                                 </script>
                             </div>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button class="btn btn-primary me-md-2" type="submit">Login</button>
+                                <button class="btn btn-primary me-md-2" type="submit"><i class="bi bi-box-arrow-in-right"></i> Login</button>
                             </div>
                         </form>
-                    </div>
+                        Untuk melihat rekapitulasi data <i>Poe Ibu</i> klik <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#laporan_index">Buat Laporan Poe Ibu</a>!.
+                        <!-- Modal Harian -->          
+                        <div class="modal fade" id="laporan_index" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Laporan Poe Ibu</h1>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="<?php echo base_url('poe_ibu/laporan_poe_ibu_public'); ?>" method="post">
+                                            <div class="form-group">
+                                                <label for="nama">Nama</label>
+                                                <input type="text" class="form-control mb-2" id="nama" name="nama" placeholder="Masukkan Nama Anda" required>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="nik">NIK</label>
+                                                        <input type="text" class="form-control mb-2" id="nik" name="nik" placeholder="Nomor Induk Kependudukan" required>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="no_wa">Nomor Whatsapp</label>
+                                                        <input type="text" class="form-control mb-2" id="no_wa" name="no_wa" placeholder="Nomor Whatsapp" required>
+                                                    </div>
+                                                </div>
+                                                <label for="alamat">Alamat</label>
+                                                <input type="text" class="form-control mb-2" id="alamat" name="alamat" placeholder="Alamat" required>
+                                                <label for="jenis_laporan">Pilih Laporan</label>
+                                                <select class="form-control mb-2" id="jenis_laporan" name="jenis_laporan" required>
+                                                    <option value="" disabled selected>-- Pilih Laporan --</option>
+                                                    <option value="harian">Laporan Harian Poe Ibu</option>
+                                                    <option value="mingguan">Laporan Mingguan Poe Ibu</option>
+                                                    <option value="bulanan">Laporan Bulanan Poe Ibu</option>
+                                                    <option value="total">Laporan Total Poe Ibu</option>
+                                                </select>
+                                                <label for="alasan">Alasan Membuat Laporan</label>
+                                                <textarea class="form-control" name="alasan" id="alasan"></textarea>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary btn-sm">Buat Laporan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <div class="col-sm-3"></div>
                 </div>
             </div>
