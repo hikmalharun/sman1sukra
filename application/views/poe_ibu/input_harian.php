@@ -201,7 +201,7 @@
                 <th rowspan="2">No</th>
                 <th rowspan="2">NIPD</th>
                 <th rowspan="2">Nama</th>
-                <th colspan="31">Tanggal (<?php echo date('F', strtotime($bulan)); ?> 2025)</th>
+                <th colspan="<?php echo $bln['jumlah_hari']; ?>">Tanggal (<?php echo date('F', strtotime($bulan)).date('Y'); ?>)</th>
               </tr>
               <tr>
                 <?php for ($i = 1; $i <= $bln['jumlah_hari']; ++$i) { ?>

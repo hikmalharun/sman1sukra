@@ -88,6 +88,8 @@ class Poe_ibu extends CI_Controller
         $nominal = $this->input->post('nominal');
         $tanggal = date('Y-m-d');
 
+        $clean_input = str_replace('.', '', $nominal);
+
         $cek_laporan = $this->db->get_where('tbl_data_poe_ibu', ['tanggal_laporan' => $tanggal_laporan, 'nipd' => $nipd])->row_array();
 
         if ($cek_laporan) {
@@ -106,7 +108,7 @@ class Poe_ibu extends CI_Controller
                 'nipd' => $nipd,
                 'nama' => $nama,
                 'kelas' => $kelas,
-                'nominal' => $nominal,
+                'nominal' => $clean_input,
                 'tanggal' => $tanggal,
             ];
             $this->db->insert('tbl_data_poe_ibu', $data);
@@ -131,9 +133,11 @@ class Poe_ibu extends CI_Controller
         $tanggal_laporan = $this->input->post('tanggal_laporan');
         $nominal = $this->input->post('nominal');
 
+        $clean_input = str_replace('.', '', $nominal);
+
         $data = [
             'tanggal_laporan' => $tanggal_laporan,
-            'nominal' => $nominal,
+            'nominal' => $clean_input,
         ];
         $this->db->where('id', $id);
         $this->db->update('tbl_data_poe_ibu', $data);
@@ -157,13 +161,16 @@ class Poe_ibu extends CI_Controller
         $data['kelas'] = $kelas;
         $data['tanggal'] = $tanggal;
         $data['bulan'] = $bulan;
+        $data['siswa'] = $this->db->get_where('tbl_data_siswa_poe_ibu', ['kelas' => $kelas])->result_array();
         if ($kelas == '' && $tanggal == '' && $bulan == '') {
             $data['laporan'] = $this->db->query('SELECT * FROM tbl_data_poe_ibu ORDER BY tanggal_laporan ASC')->result_array();
         } elseif ($kelas) {
+            $data['bln'] = $this->db->get_where('tbl_bulan', ['bulan' => date('m', strtotime($bulan))])->row_array();
             $data['laporan'] = $this->db->query("SELECT * FROM tbl_data_poe_ibu WHERE kelas = '$kelas' ORDER BY tanggal_laporan ASC")->result_array();
         } elseif ($tanggal) {
             $data['laporan'] = $this->db->query("SELECT * FROM tbl_data_poe_ibu WHERE tanggal_laporan = '$tanggal' ORDER BY tanggal_laporan ASC")->result_array();
         } elseif ($bulan) {
+            $data['bln'] = $this->db->get_where('tbl_bulan', ['bulan' => date('m', strtotime($bulan))])->row_array();
             $data['laporan'] = $this->db->query("SELECT * FROM tbl_data_poe_ibu WHERE DATE_FORMAT(tanggal_laporan, '%Y-%m') = '$bulan' ORDER BY tanggal_laporan ASC")->result_array();
         }
         $this->load->view('poe_ibu/laporan_poe_ibu', $data);
@@ -202,6 +209,8 @@ class Poe_ibu extends CI_Controller
         $data['laporan'] = $this->db->query("SELECT * FROM tbl_data_poe_ibu WHERE kelas = '$kelas' AND DATE_FORMAT(tanggal_laporan, '%Y-%m') = '$bulan' ORDER BY tanggal_laporan ASC")->result_array();
         $data['bulan'] = $bulan;
         $data['kelas'] = $kelas;
+        $data['bln'] = $this->db->get_where('tbl_bulan', ['bulan' => date('m', strtotime($bulan))])->row_array();
+        $data['siswa'] = $this->db->get_where('tbl_data_siswa_poe_ibu', ['kelas' => $kelas])->result_array();
 
         if ($jenis == 'pdf') {
             $this->load->view('poe_ibu/cetak_laporan_poe_ibu_pdf', $data);
