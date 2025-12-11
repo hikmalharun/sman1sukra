@@ -100,6 +100,20 @@
                     </div>
                 </div>
             </div>
+            <div class="accordion mb-3" id="accordionPermintaanLaporan">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapsePermintaan" aria-expanded="false" aria-controls="flush-collapsePermintaan">
+                        Permintaan Laporan
+                    </button>
+                    </h2>
+                    <div id="flush-collapsePermintaan" class="accordion-collapse collapse" data-bs-parent="#accordionPermintaanLaporan">
+                        <div class="accordion-body">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-between mb-2">
                 <h4>Laporan Poe Ibu</h4>
                 <div class="justify-content-md-end">

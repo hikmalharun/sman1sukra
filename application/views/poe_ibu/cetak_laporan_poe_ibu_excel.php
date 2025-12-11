@@ -84,8 +84,8 @@ $activeWorksheet->setCellValue($col.$row, $grand_total);
 
 $writer = new Xlsx($spreadsheet);
 $nama_file = 'laporan_poe_ibu_kelas_'.$kelas.'_bulan_'.date('m_Y', strtotime($bulan)).'.xlsx';
-$writer->save($nama_file);
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment; filename="'.$nama_file.'"');
+// $writer->save($nama_file);
 $writer->save('php://output');
 exit;
