@@ -74,33 +74,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = true;
 
-$db['default'] = [
-    'dsn' => '',
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => '',
-    'database' => 'u985398810_sman1sukra',
-    'dbdriver' => 'mysqli',
-    'dbprefix' => '',
-    'pconnect' => false,
-    'db_debug' => (ENVIRONMENT !== 'production'),
-    'cache_on' => false,
-    'cachedir' => '',
-    'char_set' => 'utf8',
-    'dbcollat' => 'utf8_general_ci',
-    'swap_pre' => '',
-    'encrypt' => false,
-    'compress' => false,
-    'stricton' => false,
-    'failover' => [],
-    'save_queries' => true,
-];
-
 // $db['default'] = [
 //     'dsn' => '',
 //     'hostname' => 'localhost',
-//     'username' => 'u985398810_sman1sukra',
-//     'password' => 'R@sidi25*%',
+//     'username' => 'root',
+//     'password' => '',
 //     'database' => 'u985398810_sman1sukra',
 //     'dbdriver' => 'mysqli',
 //     'dbprefix' => '',
@@ -117,3 +95,25 @@ $db['default'] = [
 //     'failover' => [],
 //     'save_queries' => true,
 // ];
+
+$db['default'] = [
+    'dsn' => '',
+    'hostname' => 'localhost',
+    'username' => 'u985398810_sman1sukra',
+    'password' => 'R@sidi25*%',
+    'database' => 'u985398810_sman1sukra',
+    'dbdriver' => 'mysqli',
+    'dbprefix' => '',
+    'pconnect' => false,
+    'db_debug' => (ENVIRONMENT !== 'production'),
+    'cache_on' => false,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => false,
+    'compress' => false,
+    'stricton' => false,
+    'failover' => [],
+    'save_queries' => true,
+];
