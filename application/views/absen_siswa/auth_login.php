@@ -2,7 +2,9 @@
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
 <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
     <div class="text-center mb-4">
-      <img src="<?php echo base_url('assets/img/logo_sman1sukra.png'); ?>" alt="logo" style="width: 100px;">
+      <a href="<?php echo base_url('absen_siswa'); ?>">
+        <img src="<?php echo base_url('assets/img/logo_sman1sukra.png'); ?>" alt="logo" style="width: 100px;">
+      </a>
       <h4 class="mt-2">Login</h4>
     </div>
     <?php echo $this->session->flashdata('notifikasi'); ?>
@@ -22,7 +24,7 @@
         </div>
       </div>
       <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-right"></i> Login</button>
       </div>
     </form>
   </div>

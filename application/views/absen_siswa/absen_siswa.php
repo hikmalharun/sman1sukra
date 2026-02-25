@@ -8,6 +8,21 @@
     <div class="col-lg-12">
       <?php echo $this->session->flashdata('notifikasi'); ?>
     </div>
+    <style>
+      .blink {
+        font-size: 20px;
+        font-weight: bold;
+        width: 100%;
+        color: #ff0000;
+        animation: blink-animation 1s steps(2, start) infinite;
+      }
+
+      @keyframes blink-animation {
+        to {
+          visibility: hidden;
+        }
+      }
+    </style>
     <div class="col-md-4 mb-3">
       <?php if ($modal == 'show_input') { ?>
         <?php if ($token == $cek_token['token']) { ?>
@@ -19,24 +34,26 @@
               <p class="lead">Arahkan kamera ke QR Code siswa untuk melakukan absensi.</p>
               <div id="reader" style="width:100%; margin:auto;"></div>
               <div class="mt-3">
-                <button id="startBtn" class="btn btn-success">Mulai Scanner</button>
-                <button id="stopBtn" class="btn btn-danger" disabled>Hentikan Scanner</button>
-                <button id="switchBtn" class="btn btn-primary">Ganti Kamera</button>
+                <button id="startBtn" class="btn btn-success"><i class="bi bi-camera-video"></i> Mulai Scanner</button>
+                <button id="stopBtn" class="btn btn-danger" disabled><i class="bi bi-camera-video-off"></i> Hentikan Scanner</button>
+                <button id="switchBtn" class="btn btn-primary"><i class="bi bi-phone-flip"></i> Ganti Kamera</button>
               </div>
               <div id="result" class="mt-3"></div>
             </div>
-          </div>          
+          </div>
         <?php } else { ?>
-          <div class="d-grid gap-2">
+          <div class="d-grid gap-2 text-center">
             <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalToken"><i class="bi bi-input-cursor"></i> Isi Token</button>
+            <span class="blink"><i>Tanyakan kepada admin untuk <br> mendapatkan token hari ini!</i></span>
           </div>
         <?php } ?>
       <?php } else { ?>
-        <div class="d-grid gap-2">
+        <div class="d-grid gap-2 text-center">
           <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalToken"><i class="bi bi-input-cursor"></i> Isi Token</button>
+          <span class="blink"><i>Tanyakan kepada admin untuk <br> mendapatkan token hari ini!</i></span>
         </div>
       <?php } ?>
-    </div>
+    </div>    
     <div class="col-md-8 mb-3">
       <div class="card shadow">
         <div class="card-header bg-info text-white">
@@ -44,7 +61,15 @@
         </div>
         <div class="card-body">
           <div class="table-responsive">
-            <button class="btn btn-outline-info float-end mb-3"  data-bs-toggle="modal" data-bs-target="#modalNISN"><i class="bi bi-input"></i> Masukan NISN</button>
+            <?php if ($modal == 'show_input') { ?>
+              <?php if ($token == $cek_token['token']) { ?>
+                <button class="btn btn-outline-info float-end mb-3" data-bs-toggle="modal" data-bs-target="#modalNISN"><i class="bi bi-input-cursor"></i> Masukan NISN</button>
+              <?php } else { ?>
+                <button class="btn btn-outline-info float-end mb-3"><i class="bi bi-input-cursor"></i> Masukan NISN</button>
+              <?php } ?>
+            <?php } else { ?>
+              <button class="btn btn-outline-info float-end mb-3"><i class="bi bi-input-cursor"></i> Masukan NISN</button>
+            <?php } ?>
             <table class="table table-striped table-borderless" id="tabelAbsensi">
               <thead>
                 <tr>

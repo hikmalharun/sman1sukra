@@ -5,9 +5,9 @@
     <div class="col-md-12 mb-3 mt-3">
       <nav class="navbar bg-black">
         <div class="container-fluid">
-          <a class="navbar-brand text-white"><?php echo $this->session->userdata('nama'); ?></a>
+          <a class="navbar-brand text-white"><i class="bi bi-person-circle"></i> <?php echo $this->session->userdata('nama'); ?></a>
           <div class="d-flex">
-            <a href="<?php echo base_url('absen_siswa/logout'); ?>" class="btn btn-outline-success" type="submit">Logout</a>
+            <a href="<?php echo base_url('absen_siswa/logout'); ?>" class="btn btn-outline-light" type="submit"><i class="bi bi-box-arrow-left"></i> Logout</a>
           </div>
         </div>
       </nav>
@@ -23,15 +23,15 @@
     <div class="col-md-12 mb-3">
       <div class="card shadow">
         <div class="card-body">
-          <h1>TOKEN : 
+          <h1 class="fw-bold"><i class="bi bi-code-slash"></i> TOKEN : 
             <?php if ($token) { ?>
-              <span class="token text-primary fw-bold" id="tokenText" style="cursor: pointer;"><?php echo $token['token']; ?></span>
+              <span class="token fw-bold badge text-bg-info" id="tokenText" style="cursor: pointer;"><?php echo $token['token']; ?></span>
             <?php } else { ?>
-              <span class="token text-primary fw-bold" id="tokenText" style="cursor: pointer;"></span>
+              <span></span>
             <?php } ?>
           </h1>
           <span class="text-sm"><i>Klik token untuk copy</i></span>
-          <button class="btn btn-outline-primary float-end" id="tombol_generate">Generate Token</button>
+          <button class="btn btn-outline-primary float-end" id="tombol_generate"><i class="bi bi-code-slash"></i> Generate Token</button>
         </div>
       </div>
     </div>

@@ -422,10 +422,150 @@ class Absen_siswa extends CI_Controller
         $this->load->view('absen_siswa/buat_kartu_identitas', $data);
     }
 
+    // Generate kartu identitas semua siswa ke PDF lalu ZIP dan download
+    public function generate_kartu_identitas_massal()
+    {
+        if (!$this->session->userdata('nama')) {
+            $this->session->set_flashdata('notifikasi', '
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Anda tidak memiliki izin untuk mengakses halaman ini, silahkan login!.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            ');
+            redirect('absen_siswa/auth');
+        }
+
+        $siswa_list = $this->db->get('tbl_data_siswa_poe_ibu')->result_array();
+        if (!$siswa_list) {
+            show_error('Tidak ada data siswa.');
+
+            return;
+        }
+
+        $tmp_dir = FCPATH.'temp_kartu_pdf/';
+        if (!is_dir($tmp_dir)) {
+            mkdir($tmp_dir, 0777, true);
+        }
+
+        $pdf_files = [];
+        foreach ($siswa_list as $siswa) {
+            try {
+                $nisn = $siswa['nisn'];
+                $nama = $siswa['nama'];
+                $nipd = $siswa['nipd'] ?? '';
+                $kelas = $siswa['kelas'] ?? '';
+                $card_1_path = FCPATH.'assets/img/card_1.png';
+                $card_2_path = FCPATH.'assets/img/card_2.png';
+                if (!file_exists($card_1_path) || !file_exists($card_2_path)) {
+                    continue;
+                }
+                $card_1_base64 = base64_encode(file_get_contents($card_1_path));
+                $card_2_base64 = base64_encode(file_get_contents($card_2_path));
+                $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data='.urlencode($nisn);
+                $qr_data = @file_get_contents($qr_url);
+                $qr_base64 = $qr_data ? base64_encode($qr_data) : '';
+
+                $mpdf = new Mpdf\Mpdf([
+                    'format' => [54, 86],
+                    'margin_left' => 0,
+                    'margin_right' => 0,
+                    'margin_top' => 0,
+                    'margin_bottom' => 0,
+                    'default_font' => 'Arial',
+                ]);
+
+                $html_depan = '
+                <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_1_base64.'); background-size: cover; background-position: center; padding: 4mm; box-sizing: border-box;">
+                    <div style="font-size: 12px; color: #000653;; text-align: left; margin-top: 1mm; font-weight: bold">KARTU ABSEN SISWA</div>
+                    <div style="margin-top: 170px; font-size: 14px; text-align: center; font-weight: bold; color: #000653;">'.htmlspecialchars(strtoupper($nama)).'</div>
+                    <table width"100%" style="font-size: 10px;">
+                        <tr>
+                            <td width="40px"></td>
+                            <td width="20px">NIPD</td>
+                            <td width="5px">:</td>
+                            <td>'.htmlspecialchars($nipd).'</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>NISN</td>
+                            <td>:</td>
+                            <td>'.htmlspecialchars($nisn).'</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Kelas</td>
+                            <td>:</td>
+                            <td>'.htmlspecialchars($kelas).'</td>
+                        </tr>
+                    </table>
+                </div>
+                ';
+                $mpdf->WriteHTML($html_depan);
+                $mpdf->AddPage();
+                $html_belakang = '
+                <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_2_base64.'); background-size: cover; background-position: center; padding: 3mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <div style="text-align: center; margin-top: 60px;">
+                        <img src="data:image/png;base64,'.$qr_base64.'" style="width: 36mm; height: 36mm; margin: 2mm 0;" />
+                        <div style="font-size: 10px; color: #333; margin-top: 1mm;">'.htmlspecialchars($nisn).'</div>
+                    </div>
+                </div>
+                ';
+                $mpdf->WriteHTML($html_belakang);
+                $pdf_name = 'Kartu_Identitas_'.str_replace(' ', '_', $nama).'_'.$nisn.'.pdf';
+                $pdf_path = $tmp_dir.$pdf_name;
+                $mpdf->Output($pdf_path, Mpdf\Output\Destination::FILE);
+                $pdf_files[] = $pdf_path;
+            } catch (Throwable $e) {
+                // Lewati siswa jika gagal
+                continue;
+            }
+        }
+
+        if (empty($pdf_files)) {
+            show_error('Gagal generate kartu identitas PDF.');
+
+            return;
+        }
+
+        // Buat ZIP
+        $zip_name = 'Kartu_Identitas_Siswa_'.date('Ymd_His').'.zip';
+        $zip_path = $tmp_dir.$zip_name;
+        $zip = new ZipArchive();
+        if ($zip->open($zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            foreach ($pdf_files as $file) {
+                $zip->addFile($file, basename($file));
+            }
+            $zip->close();
+        } else {
+            show_error('Gagal membuat file ZIP.');
+
+            return;
+        }
+
+        // Hapus file PDF setelah di-zip
+        foreach ($pdf_files as $file) {
+            @unlink($file);
+        }
+
+        // Download ZIP
+        if (file_exists($zip_path)) {
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="'.basename($zip_path).'"');
+            header('Content-Length: '.filesize($zip_path));
+            readfile($zip_path);
+            // Hapus file ZIP setelah download
+            @unlink($zip_path);
+            exit;
+        } else {
+            show_error('File ZIP tidak ditemukan.');
+        }
+    }
+
     public function print_report()
     {
-        $kode = $this->input->post('kode');
+        $kode = $this->input->post('kode'); // Kode merupakan tanggal atau bulan
         $kelas = $this->input->post('kelas');
+        $data_siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['kelas' => $kelas])->result_array();
 
         // Ambil data berdasarkan kode: 'tanggal' atau 'bulan'
         if ($kode == 'tanggal') {
@@ -450,88 +590,133 @@ class Absen_siswa extends CI_Controller
             $dateLike = $year.'-'.$month;
             // Gunakan DATE_FORMAT untuk mencocokkan bulan pada kolom tanggal_absen
             $data_absen = $this->db->where("DATE_FORMAT(tanggal_absen, '%Y-%m') = '$dateLike'")->get('tbl_absen_siswa')->result_array();
-            $period_label = 'Bulan: '.htmlspecialchars($dateLike);
+            // Nama bulan Indonesia
+            $nama_bulan = [
+                '01' => 'Januari', '02' => 'Februari', '03' => 'Maret', '04' => 'April',
+                '05' => 'Mei', '06' => 'Juni', '07' => 'Juli', '08' => 'Agustus',
+                '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember',
+            ];
+            $period_label = 'Bulan: '.($nama_bulan[$month] ?? $month).' '.$year;
         }
 
-        // Ambil data siswa berdasarkan kelas
-        $data_siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['kelas' => $kelas])->result_array();
+        // Gabungkan data siswa dan absen, sertakan jam absen sesuai tanggal data_absen disetiap jumlah hari pada bulan
+        // --- Generate HTML Laporan ---
+        $judul = 'LAPORAN ABSEN SISWA';
+        $kelas_label = 'Kelas: '.htmlspecialchars($kelas);
+        $html = '<h3 style="text-align:center;">'.$judul.'</h3>';
+        $html .= '<p style="text-align:center;">'.$kelas_label.'<br>'.$period_label.'</p>';
 
-        // Gabungkan data siswa dan absen
-        $data['absen_siswa'] = [];
-        foreach ($data_siswa as $siswa) {
-            $found = null;
-            foreach ($data_absen as $a) {
-                // Cocokkan id_siswa (absen) dengan nisn (siswa)
-                if (isset($a['id_siswa']) && $a['id_siswa'] == $siswa['nisn']) {
-                    $found = $a;
-                    break;
-                }
+        // Tabel header
+        $html .= '<table border="1" cellpadding="5" cellspacing="0" width="100%" style="border-collapse:collapse;font-size:10px;">';
+        $html .= '<thead><tr>';
+        $html .= '<th>No.</th><th>NISN</th><th>Nama</th>';
+        if ($kode == 'tanggal') {
+            $html .= '<th>Jam Absen</th><th>Terlambat</th>';
+        } else {
+            // Kolom hari di bulan
+            $hari = cal_days_in_month(CAL_GREGORIAN, (int) $month, (int) $year);
+            for ($d = 1; $d <= $hari; ++$d) {
+                $tgl = $year.'-'.$month.'-'.str_pad($d, 2, '0', STR_PAD_LEFT);
+                $html .= '<th width="2.3%">'.(int) $d.'</th>';
             }
-            if ($found) {
-                $row = array_merge($siswa, $found);
-            } else {
-                $row = $siswa;
-                $row['tanggal_absen'] = '';
-                $row['jam_absen'] = '';
-            }
-            $data['absen_siswa'][] = $row;
+            $html .= '<th>Terlambat</th>';
+        }
+        $html .= '</tr></thead><tbody>';
+
+        // Index absen by nisn+date
+        $absen_map = [];
+        foreach ($data_absen as $absen) {
+            $absen_map[$absen['id_siswa']][$absen['tanggal_absen']] = $absen['jam_absen'];
         }
 
-        // Build HTML report
-        $html = '<div style="text-align: center;">';
-        $html .= '<h2 style="margin:0;">Rekapitulasi Absen Siswa</h2>';
-        $html .= '<div style="margin-bottom:8px; font-size:12px;">'.htmlspecialchars('Kelas: '.$kelas).' &nbsp;|&nbsp; '.htmlspecialchars($period_label).'</div>';
-        $html .= '</div>';
-
-        $html .= '<table border="1" cellpadding="6" cellspacing="0" width="100%" style="border-collapse: collapse; font-size:12px;">';
-        $html .= '<thead><tr style="background:#f0f0f0;"><th style="width:40px;">No</th><th>Nama</th><th>NISN</th><th>Jam</th><th>Terlambat (menit)</th></tr></thead>';
-        $html .= '<tbody>';
         $no = 1;
-        foreach ($data['absen_siswa'] as $row) {
-            $jam_row = htmlspecialchars($row['jam_absen'] ?? ($row['jam'] ?? ''));
-            $terlambat_html = '';
-            if ($jam_row) {
-                // Hitung selisih menit dari 06:30
-                $jam_masuk = strtotime('06:30');
-                $jam_absen = strtotime($jam_row);
-                $selisih = round(($jam_absen - $jam_masuk) / 60);
-                if ($selisih > 0) {
-                    $terlambat_html = '<span style="color:red;font-weight:bold;">'.$selisih.' menit</span>';
-                } else {
-                    $terlambat_html = '0';
-                }
-            } else {
-                $jam_row = '<span style="color:red;font-weight:bold;">Tidak Absen</span>';
-                $terlambat_html = '<span style="color:red;font-weight:bold;">Tidak Hadir</span>';
-            }
+        foreach ($data_siswa as $siswa) {
             $html .= '<tr>';
-            $html .= '<td style="text-align:center;">'.$no.'</td>';
-            $html .= '<td>'.htmlspecialchars($row['nama'] ?? '').'</td>';
-            $html .= '<td style="text-align:center;">'.htmlspecialchars($row['nisn'] ?? '').'</td>';
-            $html .= '<td style="text-align:center;">'.$jam_row.'</td>';
-            $html .= '<td style="text-align:center;">'.$terlambat_html.'</td>';
+            $html .= '<td style="text-align:center;">'.$no++.'</td>';
+            $html .= '<td style="text-align:center;">'.htmlspecialchars($siswa['nisn']).'</td>';
+            $html .= '<td>'.htmlspecialchars($siswa['nama']).'</td>';
+            if ($kode == 'tanggal') {
+                $jam = isset($absen_map[$siswa['nisn']][$tanggal]) ? $absen_map[$siswa['nisn']][$tanggal] : '-';
+                $terlambat = '-';
+                if ($jam !== '-' && $jam > '06:30:00') {
+                    $jam_masuk = strtotime('06:30:00');
+                    $jam_absen = strtotime($jam);
+                    $diff = $jam_absen - $jam_masuk;
+                    $menit = floor($diff / 60);
+                    $jam_terlambat = floor($menit / 60);
+                    $menit_terlambat = $menit % 60;
+                    $terlambat = ($jam_terlambat > 0 ? $jam_terlambat.' jam ' : '').$menit_terlambat.' menit';
+                }
+                if ($jam > '06.30.00') {
+                    $html .= '<td style="text-align:center; color: red;">'.$jam.'</td>';
+                } else {
+                    $html .= '<td style="text-align:center;">'.$jam.'</td>';
+                }
+                $html .= '<td style="text-align:center;">'.$terlambat.'</td>';
+            } else {
+                $total_terlambat = 0;
+                $total_terlambat_jam = 0;
+                for ($d = 1; $d <= $hari; ++$d) {
+                    $tgl = $year.'-'.$month.'-'.str_pad($d, 2, '0', STR_PAD_LEFT);
+                    $jam = isset($absen_map[$siswa['nisn']][$tgl]) ? $absen_map[$siswa['nisn']][$tgl] : '-';
+                    $cell = $jam;
+                    if ($jam !== '-' && $jam > '06:30:00') {
+                        $jam_masuk = strtotime('06:30:00');
+                        $jam_absen = strtotime($jam);
+                        $diff = $jam_absen - $jam_masuk;
+                        $menit = floor($diff / 60);
+                        $jam_terlambat = floor($menit / 60);
+                        $menit_terlambat = $menit % 60;
+                        $total_terlambat += $menit;
+                        $total_terlambat_jam += $jam_terlambat;
+                        // Format jam absen menjadi HH<br>mm<br>ss
+                        $jam_parts = explode(':', $jam);
+                        $cell = '<span style="color:red;font-weight:bold;">'.($jam_parts[0] ?? '').'<br>'.($jam_parts[1] ?? '').'<br>'.($jam_parts[2] ?? '').'</span>';
+                    } elseif ($jam !== '-' && $jam !== '') {
+                        // Format jam absen menjadi HH<br>mm<br>ss
+                        $jam_parts = explode(':', $jam);
+                        $cell = ($jam_parts[0] ?? '').'<br>'.($jam_parts[1] ?? '').'<br>'.($jam_parts[2] ?? '');
+                    }
+                    $html .= '<td style="text-align:center;">'.$cell.'</td>';
+                }
+                $terlambat_kumulatif = ($total_terlambat_jam > 0 ? $total_terlambat_jam.' jam ' : '').($total_terlambat % 60).' menit';
+                $html .= '<td style="text-align:center;">'.$terlambat_kumulatif.'</td>';
+            }
             $html .= '</tr>';
-            ++$no;
         }
         $html .= '</tbody></table>';
 
-        // Generate PDF
-        try {
-            $mpdf = new Mpdf\Mpdf(['format' => 'A4', 'margin_left' => 10, 'margin_right' => 10, 'margin_top' => 10, 'margin_bottom' => 10]);
-            $title = 'Rekapitulasi Absen Siswa '.str_replace(['&nbsp;'], ' ', $period_label).' Kelas '.$kelas;
-            $mpdf->SetTitle($title);
-            $mpdf->WriteHTML($html);
-            $safe_period = preg_replace('/[^A-Za-z0-9_\-]/', '_', $period_label);
-            $safe_kelas = preg_replace('/[^A-Za-z0-9_\-]/', '_', $kelas);
-            $filename = 'Rekapitulasi_Absen_Siswa_'.$safe_period.'_Kelas_'.$safe_kelas.'.pdf';
-            $mpdf->Output($filename, 'D');
-            exit;
-        } catch (Exception $e) {
-            $data['error'] = 'Error Generate PDF: '.$e->getMessage();
-            $data['title'] = 'Rekap Absen';
-            $this->load->view('absen_siswa/print_report', $data);
-
-            return;
+        // --- Generate PDF ---
+        if ($kode == 'tanggal') {
+            $mpdf = new Mpdf\Mpdf([
+                'orientation' => 'P',
+                'format' => 'A4',
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'default_font' => 'Arial Narrow',
+            ]);
+        } else {
+            $mpdf = new Mpdf\Mpdf([
+                'orientation' => 'L',
+                'format' => 'A4',
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'default_font' => 'Arial Narrow',
+            ]);
         }
+        // Footer kiri: text, kanan bawah: page number
+        $footer_html = '<div style="width:100%;font-size:10px;">'
+            .'<span style="float:left;">Laporan Absen Siswa Kelas :'.$kelas.' '.$period_label.' | </span>'
+            .'<span style="float:right;">Halaman {PAGENO}</span>'
+            .'</div>';
+        $mpdf->SetHTMLFooter($footer_html);
+        $mpdf->WriteHTML($html);
+        $filename = 'Laporan_Absen_Siswa_'.$kelas.'_'.($kode == 'tanggal' ? str_replace('-', '', $tanggal) : $dateLike).'.pdf';
+        $mpdf->Output($filename, 'I'); // langsung download/new tab
+        exit;
     }
 }

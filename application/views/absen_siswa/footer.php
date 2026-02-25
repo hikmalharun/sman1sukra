@@ -129,6 +129,8 @@
       // Panggil pertama kali agar langsung tampil
       updateClock();
 
+      // Ambil elemen
+    const blinkText = document.getElementById("blinkText");
     </script>
   </body>
 </html>
