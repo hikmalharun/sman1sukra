@@ -15,9 +15,13 @@
 
             <?php if (!empty($siswa)) { ?>
             <div class="table-responsive">
+                <button class="btn btn-primary mb-3 float-end" id="download-selected"><i class="bi bi-file-pdf"></i> Download PDF Terpilih</button>
                 <table class="table table-striped table-hover table1">
                     <thead class="table-dark">
                         <tr>
+                            <th>
+                                <input type="checkbox" id="select-all">
+                            </th>
                             <th>No</th>
                             <th>NISN</th>
                             <th>NIPD</th>
@@ -30,6 +34,9 @@
                         <?php $no = 1;
                 foreach ($siswa as $row) { ?>
                         <tr>
+                            <td>
+                                <input type="checkbox" name="selected_siswa[]" value="<?php echo $row['nisn']; ?>">
+                            </td>
                             <td><?php echo $no++; ?></td>
                             <td><?php echo htmlspecialchars($row['nisn']); ?></td>
                             <td><?php echo htmlspecialchars($row['nipd'] ?? '-'); ?></td>
@@ -37,16 +44,37 @@
                             <td><?php echo htmlspecialchars($row['kelas']); ?></td>
                             <td>
                                 <a href="<?php echo base_url('absen_siswa/buat_kartu_identitas/'.$row['nisn']); ?>" 
-                                   class="btn btn-sm btn-primary" 
-                                   target="_blank"
-                                   title="Download Kartu Identitas PDF">
-                                    <i class="bi bi-file-pdf"></i> Download PDF
+                                class="btn btn-sm btn-primary" 
+                                target="_blank"
+                                title="Download Kartu Identitas PDF">
+                                <i class="bi bi-file-pdf"></i> Download PDF
                                 </a>
                             </td>
                         </tr>
                         <?php } ?>
                     </tbody>
                 </table>
+                <script>
+                    document.getElementById('select-all').addEventListener('change', function() {
+                        var checkboxes = document.querySelectorAll('input[name="selected_siswa[]"]');
+                        for (var checkbox of checkboxes) {
+                            checkbox.checked = this.checked;
+                        }
+                    });
+                    document.getElementById('download-selected').addEventListener('click', function() {
+                        var selected = [];
+                        var checkboxes = document.querySelectorAll('input[name="selected_siswa[]"]:checked');
+                        for (var checkbox of checkboxes) {
+                            selected.push(checkbox.value);
+                        }
+                        if (selected.length > 0) {
+                            var url = "<?php echo base_url('absen_siswa/buat_kartu_identitas_batch'); ?>?nisn=" + selected.join(',');
+                            window.open(url, '_blank');
+                        } else {
+                            alert('Silakan pilih setidaknya satu siswa untuk diunduh.');
+                        }
+                    });
+                </script>
             </div>
             <?php } else { ?>
             <div class="alert alert-info">

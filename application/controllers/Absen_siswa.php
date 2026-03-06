@@ -422,143 +422,105 @@ class Absen_siswa extends CI_Controller
         $this->load->view('absen_siswa/buat_kartu_identitas', $data);
     }
 
-    // Generate kartu identitas semua siswa ke PDF lalu ZIP dan download
-    public function generate_kartu_identitas_massal()
+    public function buat_kartu_identitas_batch()
     {
-        if (!$this->session->userdata('nama')) {
-            $this->session->set_flashdata('notifikasi', '
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Anda tidak memiliki izin untuk mengakses halaman ini, silahkan login!.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            ');
-            redirect('absen_siswa/auth');
-        }
-
-        $siswa_list = $this->db->get('tbl_data_siswa_poe_ibu')->result_array();
-        if (!$siswa_list) {
-            show_error('Tidak ada data siswa.');
+        $nisn_list = $this->input->get('nisn');
+        if (!$nisn_list) {
+            show_404();
 
             return;
         }
 
-        $tmp_dir = FCPATH.'temp_kartu_pdf/';
-        if (!is_dir($tmp_dir)) {
-            mkdir($tmp_dir, 0777, true);
+        $nisn_array = explode(',', $nisn_list);
+        $siswa_data = $this->db->where_in('nisn', $nisn_array)->get('tbl_data_siswa_poe_ibu')->result_array();
+
+        if (empty($siswa_data)) {
+            show_404();
+
+            return;
         }
 
-        $pdf_files = [];
-        foreach ($siswa_list as $siswa) {
-            try {
-                $nisn = $siswa['nisn'];
-                $nama = $siswa['nama'];
-                $nipd = $siswa['nipd'] ?? '';
-                $kelas = $siswa['kelas'] ?? '';
-                $card_1_path = FCPATH.'assets/img/card_1.png';
-                $card_2_path = FCPATH.'assets/img/card_2.png';
-                if (!file_exists($card_1_path) || !file_exists($card_2_path)) {
-                    continue;
-                }
-                $card_1_base64 = base64_encode(file_get_contents($card_1_path));
-                $card_2_base64 = base64_encode(file_get_contents($card_2_path));
-                $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data='.urlencode($nisn);
-                $qr_data = @file_get_contents($qr_url);
-                $qr_base64 = $qr_data ? base64_encode($qr_data) : '';
+        // Generate PDF gabungan untuk semua siswa yang dipilih
+        try {
+            // Path ke gambar background
+            $card_1_path = FCPATH.'assets/img/card_1.png';
+            $card_2_path = FCPATH.'assets/img/card_2.png';
 
-                $mpdf = new Mpdf\Mpdf([
-                    'format' => [54, 86],
-                    'margin_left' => 0,
-                    'margin_right' => 0,
-                    'margin_top' => 0,
-                    'margin_bottom' => 0,
-                    'default_font' => 'Arial',
-                ]);
+            // Validasi gambar ada
+            if (!file_exists($card_1_path) || !file_exists($card_2_path)) {
+                throw new Exception('File gambar card_1.png atau card_2.png tidak ditemukan di assets/img/');
+            }
 
-                $html_depan = '
-                <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_1_base64.'); background-size: cover; background-position: center; padding: 4mm; box-sizing: border-box;">
-                    <div style="font-size: 12px; color: #000653;; text-align: left; margin-top: 1mm; font-weight: bold">KARTU ABSEN SISWA</div>
-                    <div style="margin-top: 170px; font-size: 14px; text-align: center; font-weight: bold; color: #000653;">'.htmlspecialchars(strtoupper($nama)).'</div>
-                    <table width"100%" style="font-size: 10px;">
+            // Convert gambar ke base64
+            $card_1_base64 = base64_encode(file_get_contents($card_1_path));
+            $card_2_base64 = base64_encode(file_get_contents($card_2_path));
+
+            // Buat PDF menggunakan mPDF - Ukuran KTP standar (54 x 86 mm)
+            $mpdf = new Mpdf\Mpdf([
+                'format' => [210, 297],
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 10,
+                'margin_bottom' => 10,
+                'default_font' => 'Arial',
+            ]);
+
+            foreach ($siswa_data as $siswa) {
+                // Generate QR Code menggunakan API online
+                $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data='.urlencode($siswa['nisn']);
+                $qr_data = file_get_contents($qr_url);
+                $qr_base64 = base64_encode($qr_data);
+
+                // ===== HALAMAN 1: SISI DEPAN (DATA SISWA) =====
+                $html = '
+                <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_1_base64.'); background-size: cover; background-position: center; padding: 0.2mm; box-sizing: border-box; margin-bottom: 5px; border-radius: 10px;">
+                    <div style="font-size: 12px; color: #000653;; text-align: left; padding-left: 4mm; margin-top: 3.2mm; font-weight: bold">KARTU ABSEN SISWA</div>
+                    <div style="margin-top: 180px; font-size: 14px; text-align: center; font-weight: bold; color: #000653;">'.htmlspecialchars(strtoupper($siswa['nama'])).'</div>
+                    <table width"100%" style="font-size: 10px; margin-left: 3mm;">
                         <tr>
                             <td width="40px"></td>
                             <td width="20px">NIPD</td>
                             <td width="5px">:</td>
-                            <td>'.htmlspecialchars($nipd).'</td>
+                            <td>'.htmlspecialchars($siswa['nipd']).'</td>
                         </tr>
                         <tr>
                             <td></td>
                             <td>NISN</td>
                             <td>:</td>
-                            <td>'.htmlspecialchars($nisn).'</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Kelas</td>
-                            <td>:</td>
-                            <td>'.htmlspecialchars($kelas).'</td>
+                            <td>'.htmlspecialchars($siswa['nisn']).'</td>
                         </tr>
                     </table>
-                </div>
-                ';
-                $mpdf->WriteHTML($html_depan);
-                $mpdf->AddPage();
-                $html_belakang = '
-                <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_2_base64.'); background-size: cover; background-position: center; padding: 3mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                </div>';
+
+                // ===== HALAMAN 2: SISI BELAKANG (QR CODE) =====
+                $html .= '
+                <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_2_base64.'); background-size: cover; background-position: center; padding: 0.2mm; box-sizing: border-box; border-radius: 10px;">
                     <div style="text-align: center; margin-top: 60px;">
                         <img src="data:image/png;base64,'.$qr_base64.'" style="width: 36mm; height: 36mm; margin: 2mm 0;" />
-                        <div style="font-size: 10px; color: #333; margin-top: 1mm;">'.htmlspecialchars($nisn).'</div>
+                        <div style="font-size: 10px; color: #333; margin-top: 1mm;">'.htmlspecialchars($siswa['nisn']).'</div>
                     </div>
-                </div>
-                ';
-                $mpdf->WriteHTML($html_belakang);
-                $pdf_name = 'Kartu_Identitas_'.str_replace(' ', '_', $nama).'_'.$nisn.'.pdf';
-                $pdf_path = $tmp_dir.$pdf_name;
-                $mpdf->Output($pdf_path, Mpdf\Output\Destination::FILE);
-                $pdf_files[] = $pdf_path;
-            } catch (Throwable $e) {
-                // Lewati siswa jika gagal
-                continue;
+                </div>';
+
+                $mpdf->WriteHTML($html);
+                // Tambahkan page break setelah setiap kartu kecuali yang terakhir
+                if ($siswa !== end($siswa_data)) {
+                    $mpdf->AddPage();
+                }
             }
+
+            // Simpan PDF ke file
+            $pdf_name = 'kartu_identitas_siswa.pdf';
+            $mpdf->Output($pdf_name, 'I');
+        } catch (Exception $e) {
+            show_error($e->getMessage());
         }
+    }
 
-        if (empty($pdf_files)) {
-            show_error('Gagal generate kartu identitas PDF.');
-
-            return;
-        }
-
-        // Buat ZIP
-        $zip_name = 'Kartu_Identitas_Siswa_'.date('Ymd_His').'.zip';
-        $zip_path = $tmp_dir.$zip_name;
-        $zip = new ZipArchive();
-        if ($zip->open($zip_path, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-            foreach ($pdf_files as $file) {
-                $zip->addFile($file, basename($file));
-            }
-            $zip->close();
-        } else {
-            show_error('Gagal membuat file ZIP.');
-
-            return;
-        }
-
-        // Hapus file PDF setelah di-zip
-        foreach ($pdf_files as $file) {
-            @unlink($file);
-        }
-
-        // Download ZIP
-        if (file_exists($zip_path)) {
-            header('Content-Type: application/zip');
-            header('Content-Disposition: attachment; filename="'.basename($zip_path).'"');
-            header('Content-Length: '.filesize($zip_path));
-            readfile($zip_path);
-            // Hapus file ZIP setelah download
-            @unlink($zip_path);
-            exit;
-        } else {
-            show_error('File ZIP tidak ditemukan.');
-        }
+    public function list_siswa()
+    {
+        $data['title'] = 'List Siswa';
+        $data['siswa'] = $this->db->get('tbl_data_siswa_poe_ibu')->result_array();
+        $this->load->view('absen_siswa/list_siswa', $data);
     }
 
     public function print_report()
