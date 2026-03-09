@@ -3,7 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 // Load vendor autoload untuk mPDF dan Endroid QR Code
-require_once realpath(APPPATH.'../vendor/autoload.php');
+// require_once realpath(APPPATH.'../vendor/autoload.php');
 
 class Absen_siswa extends CI_Controller
 {

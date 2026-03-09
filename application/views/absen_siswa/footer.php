@@ -3,9 +3,21 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
       $(document).ready(function() {
-          $('.table1').DataTable();
-          $('.table2').DataTable();
-          $('.table3').DataTable();
+        $('.table1').DataTable();
+        $('.table2').DataTable();
+        $('.table3').DataTable();
+        $('.table4').DataTable({
+            lengthChange: true,   // tampilkan dropdown jumlah baris
+            searching: true,      // tampilkan kotak pencarian
+            ordering: false,      // hilangkan tombol order/sorting
+            dom: '<"top"r><"top"l><"top"f><"top"p>t<"bottom"i><"clear">',
+            language: {
+                paginate: {
+                    previous: '<i class="bi bi-arrow-left"></i>', 
+                    next: '<i class="bi bi-arrow-right"></i>'
+                }
+            }
+        });
       });
 
       let html5QrcodeScanner;

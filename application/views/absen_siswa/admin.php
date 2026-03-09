@@ -38,6 +38,56 @@
   </div>
   <div class="row">
     <div class="col-md-12">
+      <div class="accordion accordion-flush shadow mb-3" id="accordionFlushExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+              <span style="margin-right: 10px;">Rekap Absen</span><?php echo '<badge class="badge rounded-pill bg-primary">Tanggal : '.date('d-m-Y').'</badge>'; ?>
+            </button>
+          </h2>
+          <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr class="text-center">
+                      <th scope="col" rowspan="2">No</th>
+                      <th scope="col" rowspan="2">Kelas</th>
+                      <th scope="col" rowspan="2">Jumlah Hadir</th>
+                      <th scope="col" colspan="3">Jumlah Tidak Hadir</th>
+                      <th scope="col" rowspan="2">Aksi</th>
+                    </tr>
+                    <tr class="text-center">
+                      <th scope="col">Sakit</th>
+                      <th scope="col">Ijin</th>
+                      <th scope="col">Alfa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php $no = 1;
+foreach ($kelas as $r) { ?>
+                      <tr>
+                        <td class="text-center"><?php echo $no++; ?></td>
+                        <td class="text-center"><?php echo $r['kelas']; ?></td>
+                        <td class="text-center"></td>
+                        <td class="text-center"></td>
+                        <td class="text-center"></td>
+                        <td class="text-center"></td>
+                        <td></td>
+                    </tr>
+                    <?php } ?>
+                    </tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
       <div class="card shadow">
         <div class="card-header bg-info text-white">
           <h5 class="mb-0">Hasil Absensi</h5>

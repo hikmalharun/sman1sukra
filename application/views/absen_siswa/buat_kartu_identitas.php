@@ -15,12 +15,20 @@
 
             <?php if (!empty($siswa)) { ?>
             <div class="table-responsive">
+                <style>
+                    .dataTables_paginate {
+                        margin-top: -10px;       /* jarak atas */
+                        margin-bottom: 5px;    /* jarak bawah */
+                        margin-right: 20%;
+                        text-align: center;     /* posisikan di tengah */
+                    }
+                </style>
                 <button class="btn btn-primary mb-3 float-end" id="download-selected"><i class="bi bi-file-pdf"></i> Download PDF Terpilih</button>
-                <table class="table table-striped table-hover table1">
+                <table class="table table-striped table-hover table4">
                     <thead class="table-dark">
-                        <tr>
+                        <tr class="text-center">
                             <th>
-                                <input type="checkbox" id="select-all">
+                                <input type="checkbox" id="select-all" style="width: 15px; height: 15px; margin-top: 5px;">
                             </th>
                             <th>No</th>
                             <th>NISN</th>
@@ -35,7 +43,7 @@
                 foreach ($siswa as $row) { ?>
                         <tr>
                             <td>
-                                <input type="checkbox" name="selected_siswa[]" value="<?php echo $row['nisn']; ?>">
+                                <input type="checkbox" name="selected_siswa[]" value="<?php echo $row['nisn']; ?>" style="width: 15px; height: 15px; margin-top: 5px;">
                             </td>
                             <td><?php echo $no++; ?></td>
                             <td><?php echo htmlspecialchars($row['nisn']); ?></td>
