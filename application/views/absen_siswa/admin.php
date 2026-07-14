@@ -248,13 +248,13 @@
                                 <td class="text-center">${row.jam_absen}</td>
                                 <td class="text-center">${row.sesi}</td>
                                 <td class="text-center">
-                                  <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailModal${row.id_absensi}"><i class="bi bi-eye"></i> Detail</button>
+                                  <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailModal${row.id_siswa}"><i class="bi bi-eye"></i> Detail</button>
                                   <!-- Modal -->
-                                  <div class="modal fade" id="detailModal${row.id_absensi}" tabindex="-1" aria-labelledby="detailModalLabel${row.id_absensi}" aria-hidden="true">
+                                  <div class="modal fade" id="detailModal${row.id_siswa}" tabindex="-1" aria-labelledby="detailModalLabel${row.id_siswa}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered modal-lg">
                                       <div class="modal-content">
                                         <div class="modal-header">
-                                          <h5 class="modal-title" id="detailModalLabel${row.id_absensi}">Detail Absensi</h5>
+                                          <h5 class="modal-title" id="detailModalLabel${row.id_siswa}">Detail Absensi</h5>
                                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
