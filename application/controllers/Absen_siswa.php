@@ -168,9 +168,10 @@ class Absen_siswa extends CI_Controller
     public function by_nisn()
     {
         $nisn = $this->input->post('nisn');
+        $token = $this->input->post('token');
 
         $cek_data_siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $nisn])->row_array();
-        $get_token = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d')])->row_array();
+        $get_token = $this->db->get_where('tbl_token_absen_siswa', ['token' => $token])->row_array();
         $cek_absen_siswa = $this->db->get_where('tbl_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'id_siswa' => $nisn])->row_array();
         if ($cek_data_siswa) {
             if ($cek_absen_siswa) {
@@ -187,6 +188,7 @@ class Absen_siswa extends CI_Controller
                     'id_siswa' => $nisn,
                     'tanggal_absen' => date('Y-m-d'),
                     'jam_absen' => date('H:i:s'),
+                    'sesi' => $get_token['sesi'],
                 ];
                 $this->db->insert('tbl_absen_siswa', $data);
                 $this->session->set_flashdata('notifikasi', '

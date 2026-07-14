@@ -112,6 +112,7 @@
         <div class="modal-body">
           <div class="form-group">
             <input type="text" class="form-control" name="nisn" id="nisn" placeholder="Masukan NISN Disini" require>
+            <input type="hidden" class="form-control" name="token" id="token" value="<?php echo $absen['token']; ?>">
           </div>
         </div>
         <div class="modal-footer">
