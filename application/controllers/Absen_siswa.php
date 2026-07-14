@@ -394,6 +394,11 @@ class Absen_siswa extends CI_Controller
                 // Path ke gambar background
                 $card_1_path = FCPATH.'assets/img/card_1.png';
                 $card_2_path = FCPATH.'assets/img/card_2.png';
+                if ($siswa['foto'] == null || $siswa['foto'] == '') {
+                    $foto = FCPATH.'assets/img/blank_foto.png';
+                } else {
+                    $foto = FCPATH.'assets/img/foto_siswa/'.$siswa['foto'];
+                }
 
                 // Validasi gambar ada
                 if (!file_exists($card_1_path) || !file_exists($card_2_path)) {
@@ -422,8 +427,9 @@ class Absen_siswa extends CI_Controller
                 // ===== HALAMAN 1: SISI DEPAN (DATA SISWA) =====
                 $html_depan = '
                 <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_1_base64.'); background-size: cover; background-position: center; padding: 4mm; box-sizing: border-box;">
-                    <div style="font-size: 12px; color: #000653;; text-align: left; margin-top: 1mm; font-weight: bold">KARTU ABSEN SISWA</div>
-                    <div style="margin-top: 170px; font-size: 14px; text-align: center; font-weight: bold; color: #000653;">'.htmlspecialchars(strtoupper($siswa['nama'])).'</div>
+                <div style="font-size: 12px; color: #000653;; text-align: left; margin-top: 1mm; font-weight: bold">KARTU ABSEN SISWA</div>
+                <img src="'.$foto.'" style="width: 43%; height: auto; padding-left: 50px; margin-top: 50px;" />
+                <div style="margin-top: 18px; font-size: 14px; text-align: center; font-weight: bold; color: #000653;">'.htmlspecialchars(strtoupper($siswa['nama'])).'</div>
                     <table width"100%" style="font-size: 10px;">
                         <tr>
                             <td width="40px"></td>
@@ -436,6 +442,12 @@ class Absen_siswa extends CI_Controller
                             <td>NISN</td>
                             <td>:</td>
                             <td>'.htmlspecialchars($siswa['nisn']).'</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>KELAS</td>
+                            <td>:</td>
+                            <td>'.htmlspecialchars($siswa['kelas']).'</td>
                         </tr>
                     </table>
                 </div>
@@ -512,7 +524,7 @@ class Absen_siswa extends CI_Controller
 
             // Buat PDF menggunakan mPDF - Ukuran KTP standar (54 x 86 mm)
             $mpdf = new Mpdf\Mpdf([
-                'format' => [210, 297],
+                'format' => [75, 297],
                 'margin_left' => 10,
                 'margin_right' => 10,
                 'margin_top' => 10,
@@ -525,13 +537,18 @@ class Absen_siswa extends CI_Controller
                 $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data='.urlencode($siswa['nisn']);
                 $qr_data = file_get_contents($qr_url);
                 $qr_base64 = base64_encode($qr_data);
+                if ($siswa['foto'] == null || $siswa['foto'] == '') {
+                    $foto = FCPATH.'assets/img/blank_foto.png';
+                } else {
+                    $foto = FCPATH.'assets/img/foto_siswa/'.$siswa['foto'];
+                }
 
                 // ===== HALAMAN 1: SISI DEPAN (DATA SISWA) =====
-                $html = '
-                <div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_1_base64.'); background-size: cover; background-position: center; padding: 0.2mm; box-sizing: border-box; margin-bottom: 5px; border-radius: 10px;">
-                    <div style="font-size: 12px; color: #000653;; text-align: left; padding-left: 4mm; margin-top: 3.2mm; font-weight: bold">KARTU ABSEN SISWA</div>
-                    <div style="margin-top: 180px; font-size: 14px; text-align: center; font-weight: bold; color: #000653;">'.htmlspecialchars(strtoupper($siswa['nama'])).'</div>
-                    <table width"100%" style="font-size: 10px; margin-left: 3mm;">
+                $html = '<div style="width: 54mm; height: 86mm; position: relative; background-image: url(data:image/png;base64,'.$card_1_base64.'); background-size: cover; background-position: center; padding: 0mm; box-sizing: border-box; margin-bottom: 10px;">
+                    <div style="font-size: 12px; color: #000653;; text-align: left; padding-top: 10px; padding-left: 10px; font-weight: bold">KARTU ABSEN SISWA</div>
+                    <img src="'.$foto.'" style="width: 41%; height: auto; margin-left: 60px; margin-top: 51.5px;" />
+                    <div style="margin-top: 18px; font-size: 14px; text-align: center; font-weight: bold; color: #000653;">'.htmlspecialchars(strtoupper($siswa['nama'])).'</div>
+                    <table width"100%" style="font-size: 10px;">
                         <tr>
                             <td width="40px"></td>
                             <td width="20px">NIPD</td>
@@ -544,8 +561,15 @@ class Absen_siswa extends CI_Controller
                             <td>:</td>
                             <td>'.htmlspecialchars($siswa['nisn']).'</td>
                         </tr>
+                        <tr>
+                            <td></td>
+                            <td>KELAS</td>
+                            <td>:</td>
+                            <td>'.htmlspecialchars($siswa['kelas']).'</td>
+                        </tr>
                     </table>
-                </div>';
+                </div>
+                ';
 
                 // ===== HALAMAN 2: SISI BELAKANG (QR CODE) =====
                 $html .= '
@@ -554,7 +578,8 @@ class Absen_siswa extends CI_Controller
                         <img src="data:image/png;base64,'.$qr_base64.'" style="width: 36mm; height: 36mm; margin: 2mm 0;" />
                         <div style="font-size: 10px; color: #333; margin-top: 1mm;">'.htmlspecialchars($siswa['nisn']).'</div>
                     </div>
-                </div>';
+                </div>
+                ';
 
                 $mpdf->WriteHTML($html);
                 // Tambahkan page break setelah setiap kartu kecuali yang terakhir

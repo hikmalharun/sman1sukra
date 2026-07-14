@@ -241,61 +241,61 @@
         tbody.innerHTML = "";
         data.forEach((row) => {
           let newRow = `<tr>
-                                <td class="text-center">${row.id_siswa}</td>
-                                <td>${row.nama_siswa}</td>
-                                <td class="text-center">${row.kelas}</td>
-                                <td class="text-center">${row.tanggal_absen}</td>
-                                <td class="text-center">${row.jam_absen}</td>
-                                <td class="text-center">${row.sesi}</td>
-                                <td class="text-center">
-                                  <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailModal${row.id_siswa}"><i class="bi bi-eye"></i> Detail</button>
-                                  <!-- Modal -->
-                                  <div class="modal fade" id="detailModal${row.id_siswa}" tabindex="-1" aria-labelledby="detailModalLabel${row.id_siswa}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                                      <div class="modal-content">
-                                        <div class="modal-header">
-                                          <h5 class="modal-title" id="detailModalLabel${row.id_siswa}">Detail Absensi</h5>
-                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                          <img src="<?php echo base_url('assets/img/foto_siswa/'); ?>${row.id_siswa}.jpg" class="img-fluid mb-3" style="max-width: 40%; height: auto;">
-                                          <div style="text-align: left;">
-                                            <table class="table">
-                                              <tr>
-                                                <th>ID Siswa</th>
-                                                <td>${row.id_siswa}</td>
-                                              </tr>
-                                              <tr>
-                                                <th>Nama Siswa</th>
-                                                <td>${row.nama_siswa}</td>
-                                              </tr>
-                                              <tr>
-                                                <th>Kelas</th>
-                                                <td>${row.kelas}</td>
-                                              </tr>
-                                              <tr>
-                                                <th>Tanggal Absen</th>
-                                                <td>${row.tanggal_absen}</td>
-                                              </tr>
-                                              <tr>
-                                                <th>Jam Absen</th>
-                                                <td>${row.jam_absen}</td>
-                                              </tr>
-                                              <tr>
-                                                <th>Sesi</th>
-                                                <td>${row.sesi}</td>
-                                              </tr>
-                                            </table>
-                                          </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        </div>
-                                      </div>
+                          <td class="text-center">${row.id_siswa}</td>
+                          <td>${row.nama_siswa}</td>
+                          <td class="text-center">${row.kelas}</td>
+                          <td class="text-center">${row.tanggal_absen}</td>
+                          <td class="text-center">${row.jam_absen}</td>
+                          <td class="text-center">${row.sesi}</td>
+                          <td class="text-center">
+                            <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailModal${row.id_siswa}"><i class="bi bi-eye"></i> Detail</button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="detailModal${row.id_siswa}" tabindex="-1" aria-labelledby="detailModalLabel${row.id_siswa}" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="detailModalLabel${row.id_siswa}">Detail Absensi</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <img src="<?php echo base_url('assets/img/foto_siswa/'); ?>${row.id_siswa}.jpg" class="img-fluid mb-3" style="max-width: 40%; height: auto;">
+                                    <div style="text-align: left;">
+                                      <table class="table">
+                                        <tr>
+                                          <th>ID Siswa</th>
+                                          <td>${row.id_siswa}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Nama Siswa</th>
+                                          <td>${row.nama_siswa}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Kelas</th>
+                                          <td>${row.kelas}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Tanggal Absen</th>
+                                          <td>${row.tanggal_absen}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Jam Absen</th>
+                                          <td>${row.jam_absen}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Sesi</th>
+                                          <td>${row.sesi}</td>
+                                        </tr>
+                                      </table>
                                     </div>
                                   </div>
-                                </td>
-                              </tr>`;
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>`;
           tbody.insertAdjacentHTML("beforeend", newRow);
         });
       });

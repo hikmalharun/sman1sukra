@@ -3,7 +3,15 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script>
       $(document).ready(function() {
-          $('.table1').DataTable();
+          $('.table1').DataTable({
+              "paging": true,
+              "lengthChange": true,
+              "searching": true,
+              "ordering": false,
+              "info": false,
+              "autoWidth": false,
+              "responsive": true
+          });
           $('.table2').DataTable();
           $('.table3').DataTable();
       });
