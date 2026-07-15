@@ -179,7 +179,7 @@
     if (token && token !== '-') {
       // buat elemen input sementara
       const tempInput = document.createElement('input');
-      tempInput.value = token;
+      tempInput.value = "Silahkan klik link berikut : sman1sukra.sch.id/absen_siswa untuk melakukan scan QR Code, dengan token untuk sesi1 adalah : *_" + token + "_*";
       document.body.appendChild(tempInput);
       tempInput.select();
       document.execCommand('copy');
@@ -193,7 +193,7 @@
     if (token && token !== '-') {
       // buat elemen input sementara
       const tempInput = document.createElement('input');
-      tempInput.value = token;
+      tempInput.value = "Silahkan klik link berikut : sman1sukra.sch.id/absen_siswa untuk melakukan scan QR Code, dengan token untuk sesi2 adalah : *_" + token + "_*";
       document.body.appendChild(tempInput);
       tempInput.select();
       document.execCommand('copy');
