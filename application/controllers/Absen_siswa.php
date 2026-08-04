@@ -103,7 +103,7 @@ class Absen_siswa extends CI_Controller
     // Endpoint JSON untuk load data absensi realtime
     public function get_absensi_json_admin()
     {
-        $absensi = $this->db->get('tbl_absen_siswa')->result_array();
+        $absensi = $this->db->order_by('tanggal_absen', 'DESC')->order_by('jam_absen', 'DESC')->get('tbl_absen_siswa')->result_array();
 
         $result = [];
         foreach ($absensi as $row) {
@@ -140,24 +140,103 @@ class Absen_siswa extends CI_Controller
             sesi VARCHAR(255) NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         $this->db->query($query);
+        $query = 'CREATE TABLE IF NOT EXISTS tbl_log_petugas (
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            token VARCHAR(12) NOT NULL,
+            nisn VARCHAR(12) NOT NULL,
+            tanggal VARCHAR(255) NOT NULL,
+            jam VARCHAR(255) NOT NULL,
+            sesi VARCHAR(255) NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+        $this->db->query($query);
         $data['title'] = 'ABSEN SISWA';
+        $nisn = $this->input->get('nisn');
         $token = $this->input->get('token');
+        $cek_nisn = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $nisn])->row_array();
         $cek_token = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'token' => $token])->row_array();
         if (!$cek_token) {
             $sesi = '';
         } else {
             $sesi = $cek_token['sesi'];
         }
-        $current_time = date('H:i:s');
-        // $current_time = '06:00:00'; // Untuk pengujian, ganti dengan waktu saat ini jika diperlukan;
+        // $current_time = date('H:i:s');
+        $current_time = '06:00:00'; // Untuk pengujian, ganti dengan waktu saat ini jika diperlukan;
 
         if ($cek_token) {
-            if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time < '12:45:00') {
-                $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
-            } elseif ($sesi == 'sesi2' && $current_time >= '12:45:00') {
-                $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
+            if ($cek_nisn) {
+                $cek_petugas = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                if (!$cek_petugas) {
+                    $this->db->insert('tbl_log_petugas', ['token' => $token, 'nisn' => $nisn, 'tanggal' => date('Y-m-d'), 'jam' => date('H:i:s'), 'sesi' => $sesi]);
+                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time < '14:25:00') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } elseif ($sesi == 'sesi2' && $current_time >= '12:45:00') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } else {
+                        $data['absen'] = ['modal' => 'show_close'];
+                    }
+                } else {
+                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time < '14:25:00') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } elseif ($sesi == 'sesi2' && $current_time >= '12:45:00') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } else {
+                        $data['absen'] = ['modal' => 'show_close'];
+                    }
+                }
+
+                $siswa = $this->db->get('tbl_data_siswa_poe_ibu')->result_array();
+                $absen = $this->db->get_where('tbl_absen_siswa', ['tanggal_absen' => date('Y-m-d')])->result_array();
+                // <table>
+                // <thead>
+                // <tr>
+                //     <th>Kelas</th>
+                //     <th>Jumlah Siswa</th>
+                //     <th>Hadir/th>
+                //     <th>Sakit</th>
+                //     <th>Izin</th>
+                //     <th>Alpa</th>
+                // </tr>
+                // </thead>
+                // <tbody>
+                // </thead>
+                // </table>
+                // Jika pada tabel absen siswa nisn siswa tidak ditemukan maka merupakan data sakit, izin atau alpa
+                foreach ($siswa as $s) {
+                    $hadir = 0;
+                    $sakit = 0;
+                    $izin = 0;
+                    $alpa = 0;
+                    foreach ($absen as $a) {
+                        if ($s['nisn'] == $a['id_siswa']) {
+                            ++$hadir;
+                        } else {
+                            ++$alpa;
+                        }
+                    }
+                    $data['absen_siswa'][] = [
+                        'kelas' => $s['kelas'],
+                        'jumlah_siswa' => $s['jumlah_siswa'],
+                        'hadir' => $hadir,
+                        'sakit' => $sakit,
+                        'izin' => $izin,
+                        'alpa' => $alpa,
+                    ];
+                }
             } else {
-                $data['absen'] = ['modal' => 'show_close'];
+                $this->session->set_flashdata('notifikasi', '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Data siswa tidak ditemukan.
+                    </div>
+                ');
+                redirect('absen_siswa/index');
             }
         } else {
             $data['absen'] = ['modal' => 'show_close'];
@@ -932,5 +1011,63 @@ class Absen_siswa extends CI_Controller
         }
 
         redirect('absen_siswa/download_kartu');
+    }
+
+    public function foto_siswa()
+    {
+        $data['title'] = 'Foto Siswa';
+        $data['siswa'] = $this->db->get('tbl_data_siswa_poe_ibu')->result_array();
+        $this->load->view('absen_siswa/foto_siswa', $data);
+    }
+
+    public function update_absen()
+    {
+        $data['title'] = 'Update Absen';
+        $absen = $this->db->get('tbl_absen_siswa')->result_array();
+
+        foreach ($absen as $a) {
+            $id_siswa = $a['id_siswa'];
+            $data_siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $id_siswa])->row_array();
+            if ($data_siswa) {
+                $jam_sesi1 = '06:30:00';
+                $jam_sesi2 = '14:45:00';
+
+                if ($a['sesi'] == 'sesi1') {
+                    if ($a['jam_absen'] > $jam_sesi1) {
+                        $selisih_t = strtotime($a['jam_absen']) - strtotime($jam_sesi1);
+                        $terlambat = gmdate('H:i:s', $selisih_t); // Convert to HH:MM:SS format
+                    } else {
+                        $terlambat = '00:00:00';
+                    }
+                } else {
+                    $terlambat = '00:00:00';
+                }
+
+                if ($a['sesi'] == 'sesi2') {
+                    if ($a['jam_absen'] < $jam_sesi2) {
+                        $selisih_p = strtotime($jam_sesi2) - strtotime($a['jam_absen']);
+                        $pulang_cepat = gmdate('H:i:s', $selisih_p); // Convert to HH:MM:SS format
+                    } else {
+                        $pulang_cepat = '00:00:00';
+                    }
+                } else {
+                    $pulang_cepat = '00:00:00';
+                }
+            }
+            $data_update = [
+                // 'id_siswa' => $data_siswa['nisn'],
+                // 'nama_siswa' => $data_siswa['nama'],
+                // 'kelas' => $data_siswa['kelas'],
+                // 'tanggal_absen' => $a['tanggal_absen'],
+                // 'jam_absen' => $a['jam_absen'],
+                // 'sesi' => $a['sesi'],
+                'terlambat' => $terlambat,
+                'pulang_cepat' => $pulang_cepat,
+                // 'keterangan'=>$keterangan,
+            ];
+            $this->db->set($data_update);
+            $this->db->where('id_siswa', $id_siswa);
+            $this->db->update('tbl_absen_siswa');
+        }
     }
 }

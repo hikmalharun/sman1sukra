@@ -51,7 +51,7 @@
           <h5 class="mb-0">Hasil Absensi</h5>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="mb-3">
             <a href="<?php echo base_url('absen_siswa/buat_kartu_identitas'); ?>" class="btn btn-outline-secondary" target="_blank"><i class="bi bi-person-badge"></i> Cetak Kartu Siswa</a>
             <!-- <div class="dropdown-center">
               <button class="btn btn-secondary dropdown-toggle mb-3 float-end" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -62,7 +62,9 @@
                 <li><a class="dropdown-item" href="<?php echo base_Url('absen_siswa/admin?report_by=bulan'); ?>">Bulan</a></li>
               </ul>
             </div> -->
-            <table class="table table-striped table-borderless table-hover" id="tabelAbsensiadmin">
+          </div>
+          <div class="table-responsive">
+            <table class="table table-striped table-borderless table-hover table2" id="tabelAbsensiadmin">
               <thead>
                 <tr>
                   <th class="text-center">ID Siswa</th>

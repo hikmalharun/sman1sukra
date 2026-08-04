@@ -38,6 +38,28 @@
             <button id="switchBtn" class="btn btn-primary"><i class="bi bi-phone-flip"></i> Ganti Kamera</button>
           </div>
           <div id="result" class="mt-3"></div>
+          <div class="card" style="max-width: 100%; max-height: 100%; border: none;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img src="<?php echo base_url('assets/img/foto_siswa/'.$detail_petugas['nisn'].'.jpg'); ?>" class="img-thumbnail rounded" style="max-width: 90%; max-height: 90%; border-radius: 10px;" alt="foto_siswa">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body" style="text-align:left;">
+                  <table class="table table-striped">
+                    <tr>
+                      <td>Nama</td><td>:</td><td><h5 class="card-title"><?php echo $detail_petugas['nama']; ?></h5></td>
+                    </tr>
+                    <tr>
+                      <td>NISN</td><td>:</td><td><?php echo $detail_petugas['nisn']; ?></td>
+                    </tr>
+                    <tr>
+                      <td>Kelas</td><td>:</td><td><?php echo $detail_petugas['kelas']; ?></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     <?php } else { ?>
@@ -53,25 +75,32 @@
           <h5 class="mb-0">Hasil Absensi</h5>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
-            <?php if ($absen['modal'] == 'show_input') { ?>
+          <div class="row">
+            <div class="col-md-12">
+              <?php if ($absen['modal'] == 'show_input') { ?>
               <button class="btn btn-outline-info float-end mb-3" data-bs-toggle="modal" data-bs-target="#modalNISN"><i class="bi bi-input-cursor"></i> Masukan NISN</button>
-            <?php } else { ?>
+              <?php } else { ?>
               <button class="btn btn-outline-info float-end mb-3"><i class="bi bi-input-cursor"></i> Masukan NISN</button>
-            <?php } ?>
-            <table class="table table-striped table-borderless" id="tabelAbsensi">
-              <thead>
-                <tr>
-                  <th>ID Siswa</th>
-                  <th>Nama Siswa</th>
-                  <th>Kelas</th>
-                  <th>Tanggal Absen</th>
-                  <th>Jam Absen</th>
-                  <th>Sesi</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyAbsensi"></tbody>
-            </table>
+              <?php } ?>
+              <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#staticRekap"><i class="bi bi-arrow-down-up"></i> Rekapitulasi</button>
+            </div>
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table class="table table-striped table-borderless" id="tabelAbsensi">
+                  <thead>
+                    <tr>
+                      <th>ID Siswa</th>
+                      <th>Nama Siswa</th>
+                      <th>Kelas</th>
+                      <th>Tanggal Absen</th>
+                      <th>Jam Absen</th>
+                      <th>Sesi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbodyAbsensi"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -89,6 +118,9 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div class="form-group mb-2">
+            <input type="number" class="form-control" name="nisn" id="nisn" placeholder="Masukan NISN Disini" require>
+          </div>
           <div class="form-group">
             <input type="text" class="form-control" name="token" id="token" placeholder="Masukan Token Disini" require>
           </div>
@@ -119,6 +151,29 @@
           <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-right"></i> Kirim</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="staticRekap" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Rekapitulasi</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-resposive">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Kelas</th>
+                <th>Kelas</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
