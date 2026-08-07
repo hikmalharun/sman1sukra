@@ -23,23 +23,26 @@
     <div class="col-md-12 mb-3">
       <div class="card shadow">
         <div class="card-body">
-          <h2 class="fw-bold"><i class="bi bi-code-slash"></i> TOKEN SESI1 : 
-            <?php if ($token1) { ?>
-              <span class="token fw-bold badge text-bg-success" id="tokenText1" style="cursor: pointer; width: 28%;"><?php echo $token1['token']; ?></span>
-            <?php } else { ?>
-              <span></span>
-            <?php } ?>
-            <button class="btn btn-outline-primary" id="tombol_generate1"><i class="bi bi-arrow-clockwise"></i></button>
-          </h2>
-          <h2 class="fw-bold"><i class="bi bi-code-slash"></i> TOKEN SESI2 : 
-            <?php if ($token2) { ?>
-              <span class="token fw-bold badge text-bg-warning" id="tokenText2" style="cursor: pointer; width: 28%;"><?php echo $token2['token']; ?></span>
-            <?php } else { ?>
-              <span></span>
-            <?php } ?>
-            <button class="btn btn-outline-primary" id="tombol_generate2"><i class="bi bi-arrow-clockwise"></i></button>
-          </h2>
-          <span class="text-sm"><i>Klik token untuk copy</i></span>
+          <h5 class="card-title fw-bold"><button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#generateToken"><i class="bi bi-arrow-clockwise"></i> Generate Token</button></h5>
+          <table class="table table-striped" style="width: 100%;">
+            <thead>
+              <tr>
+                <th class="text-center">Sesi</th>
+                <th class="text-center">Token</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($token as $t) { ?>
+                <tr>
+                  <td class="text-center"><?php echo ucwords($t['sesi']); ?></td>
+                  <td class="text-center" id="tokenText<?php echo ($t['sesi'] == 'sesi1') ? '1' : '2'; ?>" style="cursor: pointer;">
+                    <button class="btn <?php echo ($t['sesi'] == 'sesi1') ? 'btn-success' : 'btn-warning'; ?>" style="width:100%;"><h3><i class="bi bi-copy"></i> <?php echo $t['token']; ?></h3></button>
+                  </td>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+          <p class="text-sm"><i>Klik token untuk copy</i></p>
         </div>
       </div>
     </div>
@@ -84,6 +87,26 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="generateToken" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="<?php echo base_url('absen_siswa/simpan_token'); ?>" method="post">
+      <div class="modal-body">
+        Apakah anda yakin ingin generate token absensi hari ini? Token yang sudah digenerate tidak bisa diubah kembali.
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i> Generate</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Modal -->
 <div class="modal fade" id="reportBy" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">

@@ -10,16 +10,16 @@
         <label for="nisn" class="form-label">NISN</label>
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-key"></i></span>
-          <input type="text" class="form-control" name="nisn" id="nisn" placeholder="Masukkan NISN">
+          <input type="text" class="form-control" name="nisn" id="nisn" placeholder="Masukkan NISN" required>
         </div>
       </div>
       <div class="mb-3">
         <label for="tgl_lahir" class="form-label">Tanggal Lahir</label>
         <div class="input-group">
           <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-          <input type="number" class="form-control" name="tgl_lahir" id="tgl_lahir" placeholder="Masukkan Tanggal Lahir (ddmmyyyy)">
+          <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahir" placeholder="Masukkan Tanggal Lahir (ddmmyyyy)" required>
         </div>
-        <span style="font-size: 14px; font-style: italic; color: #6c757d;" class="form-text text-muted">dd:tanggal, mm:bulan, yyyy:tahun</span>
+        <!-- <span style="font-size: 14px; font-style: italic; color: #6c757d;" class="form-text text-muted">dd:tanggal, mm:bulan, yyyy:tahun</span> -->
       </div>
       <div class="d-grid mb-3">
         <button type="submit" class="btn btn-primary"><i class="bi bi-download"></i> Download</button>

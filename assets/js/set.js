@@ -63,8 +63,11 @@ function onScanSuccess(decodedText, decodedResult) {
 			}
 		})
 		.catch((err) => {
+			// Menampilkan pesan error asli di halaman agar mudah dibaca
 			document.getElementById("result").innerHTML =
-				`<div class="alert alert-danger">Terjadi kesalahan!</div>`;
+				`<div class="alert alert-danger">Terjadi kesalahan: ${err.message}</div>`;
+			// Menampilkan detail error di Console Browser (F12)
+			console.error("Detail Error:", err);
 		});
 }
 

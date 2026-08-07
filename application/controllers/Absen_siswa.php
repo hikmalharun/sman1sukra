@@ -14,113 +14,6 @@ class Absen_siswa extends CI_Controller
         date_default_timezone_set('Asia/Jakarta');
     }
 
-    // Simpan absensi dari hasil scan QR
-    public function simpan()
-    {
-        $input = json_decode(file_get_contents('php://input'), true);
-        $id_siswa = $input['id_siswa'];
-
-        // Cari data siswa berdasarkan NISN
-        $siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $id_siswa])->row_array();
-
-        if (!$siswa) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Siswa tidak ditemukan!',
-            ]);
-
-            return;
-        }
-
-        // Cek apakah sudah absen hari ini
-        $curret_time = date('H:i:s');
-        // $curret_time = '15:00:00'; // Ubah ke jam custome untuk pengujian
-
-        if ($curret_time >= '04:30:00' && $curret_time < '12:45:00') {
-            $sesi = 'sesi1';
-        } elseif ($curret_time >= '12:45:00') {
-            $sesi = 'sesi2';
-        }
-
-        $cek_absen = $this->db->get_where('tbl_absen_siswa', [
-            'id_siswa' => $id_siswa,
-            'tanggal_absen' => date('Y-m-d'),
-            'sesi' => $sesi,
-        ])->row_array();
-
-        if (!$cek_absen) {
-            // Simpan absensi baru
-            $data = [
-                'id_siswa' => $siswa['nisn'],
-                'tanggal_absen' => date('Y-m-d'),
-                'jam_absen' => date('H:i:s'),
-                'sesi' => $sesi,
-            ];
-            $this->db->insert('tbl_absen_siswa', $data);
-
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Absensi berhasil!',
-                'id_siswa' => $siswa['nisn'],
-                'nama_siswa' => $siswa['nama'],
-                'kelas' => $siswa['kelas'],
-                'tanggal_absen' => $data['tanggal_absen'],
-                'jam_absen' => $data['jam_absen'],
-                'sesi' => $data['sesi'],
-            ]);
-        } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Siswa sudah absen hari ini!',
-            ]);
-        }
-    }
-
-    // Endpoint JSON untuk load data absensi realtime
-    public function get_absensi_json()
-    {
-        $absensi = $this->db->order_by('tanggal_absen', 'DESC')
-                            ->order_by('jam_absen', 'DESC')
-                            ->get_where('tbl_absen_siswa', ['tanggal_absen' => date('Y-m-d')])
-                            ->result_array();
-
-        $result = [];
-        foreach ($absensi as $row) {
-            $siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $row['id_siswa']])->row_array();
-            $result[] = [
-                'id_siswa' => $row['id_siswa'],
-                'nama_siswa' => $siswa ? $siswa['nama'] : '-',
-                'kelas' => $siswa ? $siswa['kelas'] : '-',
-                'tanggal_absen' => $row['tanggal_absen'],
-                'jam_absen' => $row['jam_absen'],
-                'sesi' => $row['sesi'],
-            ];
-        }
-
-        echo json_encode($result);
-    }
-
-    // Endpoint JSON untuk load data absensi realtime
-    public function get_absensi_json_admin()
-    {
-        $absensi = $this->db->order_by('tanggal_absen', 'DESC')->order_by('jam_absen', 'DESC')->get('tbl_absen_siswa')->result_array();
-
-        $result = [];
-        foreach ($absensi as $row) {
-            $siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $row['id_siswa']])->row_array();
-            $result[] = [
-                'id_siswa' => $row['id_siswa'],
-                'nama_siswa' => $siswa ? $siswa['nama'] : '-',
-                'kelas' => $siswa ? $siswa['kelas'] : '-',
-                'tanggal_absen' => $row['tanggal_absen'],
-                'jam_absen' => $row['jam_absen'],
-                'sesi' => $row['sesi'],
-            ];
-        }
-
-        echo json_encode($result);
-    }
-
     // Halaman utama absensi
     public function index()
     {
@@ -149,99 +42,391 @@ class Absen_siswa extends CI_Controller
             sesi VARCHAR(255) NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         $this->db->query($query);
+
         $data['title'] = 'ABSEN SISWA';
         $nisn = $this->input->get('nisn');
         $token = $this->input->get('token');
         $cek_nisn = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $nisn])->row_array();
         $cek_token = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'token' => $token])->row_array();
+
+        // Ambil tanggal hari ini
+        $tanggal = date('Y-m-d');
+
+        // Deteksi nama hari berdasarkan tanggal
+        $hari = date('l', strtotime($tanggal));
+
+        // Ubah menjadi nama hari Indonesia
+        switch ($hari) {
+            case 'Sunday':    $hari = 'Minggu';
+                break;
+            case 'Monday':    $hari = 'Senin';
+                break;
+            case 'Tuesday':   $hari = 'Selasa';
+                break;
+            case 'Wednesday': $hari = 'Rabu';
+                break;
+            case 'Thursday':  $hari = 'Kamis';
+                break;
+            case 'Friday':    $hari = 'Jumat';
+                break;
+            case 'Saturday':  $hari = 'Sabtu';
+                break;
+        }
+
+        // Ambil jam real-time saat ini
+        // $current_time = date('H:i:s');
+
+        // UNTUK PENGUJIAN: Hapus tanda komentar di bawah ini untuk mencoba jam tertentu
+        $current_time = '11:30:00';
+
         if (!$cek_token) {
             $sesi = '';
         } else {
             $sesi = $cek_token['sesi'];
         }
-        // $current_time = date('H:i:s');
-        $current_time = '06:00:00'; // Untuk pengujian, ganti dengan waktu saat ini jika diperlukan;
 
-        if ($cek_token) {
-            if ($cek_nisn) {
-                $cek_petugas = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
-                if (!$cek_petugas) {
-                    $this->db->insert('tbl_log_petugas', ['token' => $token, 'nisn' => $nisn, 'tanggal' => date('Y-m-d'), 'jam' => date('H:i:s'), 'sesi' => $sesi]);
-                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time < '14:25:00') {
-                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
+        if ($hari == 'Jumat') {
+            if ($cek_token) {
+                if ($cek_nisn) {
+                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time <= '09:00:00') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'sesi' => $cek_token['sesi']];
                         $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
                         $data['detail_petugas'] = $cek_nisn;
-                    } elseif ($sesi == 'sesi2' && $current_time >= '12:45:00') {
-                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
+                    } elseif ($sesi == 'sesi2' && $current_time >= '14:45:00' && $current_time <= '23:59:59') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'sesi' => $cek_token['sesi']];
                         $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
                         $data['detail_petugas'] = $cek_nisn;
-                    } else {
-                        $data['absen'] = ['modal' => 'show_close'];
                     }
                 } else {
-                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time < '14:25:00') {
-                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
-                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
-                        $data['detail_petugas'] = $cek_nisn;
-                    } elseif ($sesi == 'sesi2' && $current_time >= '12:45:00') {
-                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'token' => $cek_token['token'], 'sesi' => $cek_token['sesi']];
-                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
-                        $data['detail_petugas'] = $cek_nisn;
-                    } else {
-                        $data['absen'] = ['modal' => 'show_close'];
-                    }
-                }
-
-                $siswa = $this->db->get('tbl_data_siswa_poe_ibu')->result_array();
-                $absen = $this->db->get_where('tbl_absen_siswa', ['tanggal_absen' => date('Y-m-d')])->result_array();
-                // <table>
-                // <thead>
-                // <tr>
-                //     <th>Kelas</th>
-                //     <th>Jumlah Siswa</th>
-                //     <th>Hadir/th>
-                //     <th>Sakit</th>
-                //     <th>Izin</th>
-                //     <th>Alpa</th>
-                // </tr>
-                // </thead>
-                // <tbody>
-                // </thead>
-                // </table>
-                // Jika pada tabel absen siswa nisn siswa tidak ditemukan maka merupakan data sakit, izin atau alpa
-                foreach ($siswa as $s) {
-                    $hadir = 0;
-                    $sakit = 0;
-                    $izin = 0;
-                    $alpa = 0;
-                    foreach ($absen as $a) {
-                        if ($s['nisn'] == $a['id_siswa']) {
-                            ++$hadir;
-                        } else {
-                            ++$alpa;
-                        }
-                    }
-                    $data['absen_siswa'][] = [
-                        'kelas' => $s['kelas'],
-                        'jumlah_siswa' => $s['jumlah_siswa'],
-                        'hadir' => $hadir,
-                        'sakit' => $sakit,
-                        'izin' => $izin,
-                        'alpa' => $alpa,
-                    ];
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">NISN tidak ditemukan!</div>');
+                    redirect('absen_siswa');
                 }
             } else {
-                $this->session->set_flashdata('notifikasi', '
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        Data siswa tidak ditemukan.
-                    </div>
-                ');
-                redirect('absen_siswa/index');
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Token tidak valid!</div>');
+                redirect('absen_siswa');
             }
         } else {
-            $data['absen'] = ['modal' => 'show_close'];
+            if ($cek_token) {
+                if ($cek_nisn) {
+                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time <= '11:45:00') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'sesi' => $cek_token['sesi']];
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } elseif ($sesi == 'sesi2' && $current_time >= '14:45:00' && $current_time <= '23:59:59') {
+                        $data['absen'] = ['modal' => 'show_input', 'token' => $token, 'sesi' => $cek_token['sesi']];
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    }
+                } else {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">NISN tidak ditemukan!</div>');
+                    redirect('absen_siswa');
+                }
+            } else {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Token tidak valid!</div>');
+                redirect('absen_siswa');
+            }
         }
+
+        var_dump($data);
+        exit;
+
         $this->load->view('absen_siswa/absen_siswa', $data);
+    }
+
+    // Simpan absensi dari hasil scan QR
+    public function simpan()
+    {
+        // Ambil jam real-time saat ini
+        // $current_time = date('H:i:s');
+
+        // UNTUK PENGUJIAN: Hapus tanda komentar di bawah ini untuk mencoba jam tertentu
+        $current_time = '11:30:00';
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id_siswa = $input['id_siswa'];
+
+        // Cari data siswa berdasarkan NISN
+        $siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $id_siswa])->row_array();
+
+        if (!$siswa) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Siswa tidak ditemukan!',
+            ]);
+
+            return;
+        } else {
+            // Logika pembagian sesi untuk selain hari Jumat
+            if ($current_time >= '04:30:00' && $current_time < '11:45:00') {
+                $sesi = 'sesi1';
+            } elseif ($current_time >= '11:45:00' && $current_time < '12:45:00') {
+                $sesi = 'sholat';
+            } elseif ($current_time > '14:45:00' && $current_time <= '23:59:59') {
+                $sesi = 'sesi2';
+            }
+
+            $cek_absen = $this->db->get_where('tbl_absen_siswa', [
+                'id_siswa' => $id_siswa,
+                'tanggal_absen' => date('Y-m-d'),
+                'sesi' => $sesi,
+            ])->row_array();
+
+            if (!$cek_absen) {
+                // Ambil tanggal hari ini
+                $tanggal = date('Y-m-d');
+
+                // Deteksi nama hari berdasarkan tanggal
+                $hari = date('l', strtotime($tanggal));
+
+                // Ubah menjadi nama hari Indonesia
+                switch ($hari) {
+                    case 'Sunday':    $hari = 'Minggu';
+                        break;
+                    case 'Monday':    $hari = 'Senin';
+                        break;
+                    case 'Tuesday':   $hari = 'Selasa';
+                        break;
+                    case 'Wednesday': $hari = 'Rabu';
+                        break;
+                    case 'Thursday':  $hari = 'Kamis';
+                        break;
+                    case 'Friday':    $hari = 'Jumat';
+                        break;
+                    case 'Saturday':  $hari = 'Sabtu';
+                        break;
+                }
+
+                // Tentukan batas jam masuk dan pulang
+                if ($hari == 'Jumat') {
+                    $jam_masuk = '06:30:00';
+                    $jam_pulang = '11:15:00';
+                } else {
+                    $jam_masuk = '06:30:00';
+                    $jam_pulang = '14:45:00';
+                }
+                // Inisialisasi default
+                $terlambat = 0;
+                $pulang_cepat = 0;
+
+                if ($sesi == 'sesi1') {
+                    if ($current_time > $jam_masuk) {
+                        $terlambat = strtotime($current_time) - strtotime($jam_masuk);
+                        $terlambat = gmdate('H:i:s', $terlambat);
+                        $pulang_cepat = '00:00:00';
+                    }
+                } elseif ($sesi == 'sesi2') {
+                    if ($current_time < $jam_pulang) {
+                        $terlambat = '00:00:00';
+                        $pulang_cepat = strtotime($jam_pulang) - strtotime($current_time);
+                        $pulang_cepat = gmdate('H:i:s', $pulang_cepat);
+                    }
+                } elseif ($sesi == 'sholat') {
+                    $terlambat = '00:00:00';
+                    $pulang_cepat = '00:00:00';
+                }
+
+                // Simpan absensi baru
+                $data = [
+                    'id_siswa' => $siswa['nisn'],
+                    'tanggal_absen' => date('Y-m-d'),
+                    'jam_absen' => $current_time,
+                    'sesi' => $sesi,
+                    'terlambat' => $terlambat,
+                    'pulang_cepat' => $pulang_cepat,
+                    'keterangan' => '',
+                ];
+                $this->db->insert('tbl_absen_siswa', $data);
+
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Absensi berhasil!',
+                    'id_siswa' => $siswa['nisn'],
+                    'nama_siswa' => $siswa['nama'],
+                    'kelas' => $siswa['kelas'],
+                    'tanggal_absen' => $data['tanggal_absen'],
+                    'jam_absen' => $data['jam_absen'],
+                    'sesi' => $data['sesi'],
+                ]);
+            } elseif ($cek_absen['sesi'] == 'sesi1' && $sesi == 'sholat') {
+                // Ambil tanggal hari ini
+                $tanggal = date('Y-m-d');
+
+                // Deteksi nama hari berdasarkan tanggal
+                $hari = date('l', strtotime($tanggal));
+
+                // Ubah menjadi nama hari Indonesia
+                switch ($hari) {
+                    case 'Sunday':    $hari = 'Minggu';
+                        break;
+                    case 'Monday':    $hari = 'Senin';
+                        break;
+                    case 'Tuesday':   $hari = 'Selasa';
+                        break;
+                    case 'Wednesday': $hari = 'Rabu';
+                        break;
+                    case 'Thursday':  $hari = 'Kamis';
+                        break;
+                    case 'Friday':    $hari = 'Jumat';
+                        break;
+                    case 'Saturday':  $hari = 'Sabtu';
+                        break;
+                }
+
+                // Tentukan batas jam masuk dan pulang
+                if ($hari == 'Jumat') {
+                    $jam_masuk = '06:30:00';
+                    $jam_pulang = '11:15:00';
+                } else {
+                    $jam_masuk = '06:30:00';
+                    $jam_pulang = '14:45:00';
+                }
+                // Inisialisasi default
+                $terlambat = 0;
+                $pulang_cepat = 0;
+
+                if ($sesi == 'sesi1') {
+                    if ($current_time > $jam_masuk) {
+                        $terlambat = strtotime($current_time) - strtotime($jam_masuk);
+                        $terlambat = gmdate('H:i:s', $terlambat);
+                        $pulang_cepat = '00:00:00';
+                    }
+                } elseif ($sesi == 'sesi2') {
+                    if ($current_time < $jam_pulang) {
+                        $terlambat = '00:00:00';
+                        $pulang_cepat = strtotime($jam_pulang) - strtotime($current_time);
+                        $pulang_cepat = gmdate('H:i:s', $pulang_cepat);
+                    }
+                } elseif ($sesi == 'sholat') {
+                    $terlambat = '00:00:00';
+                    $pulang_cepat = '00:00:00';
+                }
+
+                // Simpan absensi baru
+                $data = [
+                    'id_siswa' => $siswa['nisn'],
+                    'tanggal_absen' => date('Y-m-d'),
+                    'jam_absen' => $current_time,
+                    'sesi' => $sesi,
+                    'terlambat' => $terlambat,
+                    'pulang_cepat' => $pulang_cepat,
+                    'keterangan' => '',
+                ];
+                $this->db->insert('tbl_absen_siswa', $data);
+
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Absensi berhasil!',
+                    'id_siswa' => $siswa['nisn'],
+                    'nama_siswa' => $siswa['nama'],
+                    'kelas' => $siswa['kelas'],
+                    'tanggal_absen' => $data['tanggal_absen'],
+                    'jam_absen' => $data['jam_absen'],
+                    'sesi' => $data['sesi'],
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Siswa sudah absen hari ini!',
+                ]);
+            }
+        }
+    }
+
+    // Endpoint JSON untuk load data absensi realtime
+    public function get_absensi_json()
+    {
+        // Ambil jam real-time saat ini
+        // $current_time = date('H:i:s');
+
+        // UNTUK PENGUJIAN: Hapus tanda komentar di bawah ini untuk mencoba jam tertentu
+        $current_time = '11:30:00';
+
+        // Ambil tanggal hari ini
+        $tanggal = date('Y-m-d');
+
+        // Deteksi nama hari berdasarkan tanggal
+        $hari = date('l', strtotime($tanggal));
+
+        // Ubah menjadi nama hari Indonesia
+        switch ($hari) {
+            case 'Sunday':    $hari = 'Minggu';
+                break;
+            case 'Monday':    $hari = 'Senin';
+                break;
+            case 'Tuesday':   $hari = 'Selasa';
+                break;
+            case 'Wednesday': $hari = 'Rabu';
+                break;
+            case 'Thursday':  $hari = 'Kamis';
+                break;
+            case 'Friday':    $hari = 'Jumat';
+                break;
+            case 'Saturday':  $hari = 'Sabtu';
+                break;
+        }
+
+        // Tentukan batas jam masuk dan pulang
+        if ($hari == 'Jumat') {
+            $jam_masuk = '06:30:00';
+            $jam_pulang = '11:15:00';
+        } else {
+            $jam_masuk = '06:30:00';
+            $jam_pulang = '14:45:00';
+
+            // Logika pembagian sesi untuk selain hari Jumat
+            if ($current_time >= '06:30:00' && $current_time < '11:45:00') {
+                $sesi = 'sesi1';
+            } elseif ($current_time >= '11:45:00' && $current_time < '12:45:00') {
+                $sesi = 'sholat';
+            } elseif ($current_time > '14:45:00' && $current_time <= '23:59:59') {
+                $sesi = 'sesi2';
+            }
+        }
+
+        $absensi = $this->db->order_by('tanggal_absen', 'DESC')
+                            ->order_by('jam_absen', 'DESC')
+                            ->get_where('tbl_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'sesi' => $sesi])
+                            ->result_array();
+
+        $result = [];
+        foreach ($absensi as $row) {
+            $siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $row['id_siswa']])->row_array();
+            $result[] = [
+                'id_siswa' => $row['id_siswa'],
+                'nama_siswa' => $siswa ? $siswa['nama'] : '-',
+                'kelas' => $siswa ? $siswa['kelas'] : '-',
+                'tanggal_absen' => $row['tanggal_absen'],
+                'jam_absen' => $row['jam_absen'],
+                'sesi' => $row['sesi'],
+                'terlambat' => $row['terlambat'],
+                'pulang_cepat' => $row['pulang_cepat'],
+            ];
+        }
+
+        echo json_encode($result);
+    }
+
+    // Endpoint JSON untuk load data absensi realtime
+    public function get_absensi_json_admin()
+    {
+        $absensi = $this->db->order_by('tanggal_absen', 'DESC')->order_by('jam_absen', 'DESC')->get('tbl_absen_siswa')->result_array();
+
+        $result = [];
+        foreach ($absensi as $row) {
+            $siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $row['id_siswa']])->row_array();
+            $result[] = [
+                'id_siswa' => $row['id_siswa'],
+                'nama_siswa' => $siswa ? $siswa['nama'] : '-',
+                'kelas' => $siswa ? $siswa['kelas'] : '-',
+                'tanggal_absen' => $row['tanggal_absen'],
+                'jam_absen' => $row['jam_absen'],
+                'sesi' => $row['sesi'],
+                'terlambat' => $row['terlambat'],
+                'pulang_cepat' => $row['pulang_cepat'],
+            ];
+        }
+
+        echo json_encode($result);
     }
 
     public function by_nisn()
@@ -260,7 +445,7 @@ class Absen_siswa extends CI_Controller
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 ');
-                redirect('absen_siswa/index?token='.$get_token['token']);
+                redirect('absen_siswa/index?token='.$get_token['token'].'&nisn='.$nisn);
             } else {
                 // Simpan absensi baru
                 $data = [
@@ -276,7 +461,7 @@ class Absen_siswa extends CI_Controller
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 ');
-                redirect('absen_siswa/index?token='.$get_token['token']);
+                redirect('absen_siswa/index?token='.$get_token['token'].'&nisn='.$nisn);
             }
         } else {
             $this->session->set_flashdata('notifikasi', '
@@ -285,7 +470,7 @@ class Absen_siswa extends CI_Controller
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             ');
-            redirect('absen_siswa/index?token='.$get_token['token']);
+            redirect('absen_siswa/index?token='.$get_token['token'].'&nisn='.$nisn);
         }
     }
 
@@ -354,16 +539,7 @@ class Absen_siswa extends CI_Controller
         if ($this->session->userdata('nama')) {
             $data['title'] = 'Admin';
             $data['data_absen'] = $this->db->get('tbl_absen_siswa')->result_array();
-            $token1 = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'sesi' => 'sesi1'])->row_array();
-            $token2 = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'sesi' => 'sesi2'])->row_array();
-
-            if ($token1) {
-                $data['token1'] = $token1;
-                $data['token2'] = $token2;
-            } else {
-                $data['token1'] = '';
-                $data['token2'] = '';
-            }
+            $data['token'] = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d')])->result_array();
             $data['report_by'] = $this->input->get('report_by');
             $data['kelas'] = $this->db->get('tbl_kelas')->result_array();
             $this->load->view('absen_siswa/admin', $data);
@@ -389,53 +565,106 @@ class Absen_siswa extends CI_Controller
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         $this->db->query($query);
 
-        $data = json_decode(file_get_contents('php://input'), true);
-        $token = $data['token'] ?? null;
-        $jam1 = '04:30:00';
-        $jam2 = '12:45:00';
-        $sesi1 = 'sesi1';
-        $sesi2 = 'sesi2';
+        $length = 6;
+        $token = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 1, $length);
 
-        if ($token) {
-            $current_time = date('H:i:s');
-            // $current_time = '04:30:00'; // Untuk pengujian, ganti dengan waktu saat ini jika diperlukan
-            if ($current_time >= $jam1 && $current_time < $jam2) {
-                // Cek token sudah ada untuk sesi 1
-                if ($this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'sesi' => $sesi1])->num_rows() > 0) {
-                    echo json_encode(['message' => 'Token sesi 1 sudah dibuat sebelumnya']);
+        // Ambil jam real-time saat ini
+        // $current_time = date('H:i:s');
 
-                    return;
-                } else {
-                    // Simpan token untuk sesi 1
-                    $this->db->insert('tbl_token_absen_siswa', [
-                        'token' => $token,
-                        'tanggal_absen' => date('Y-m-d'),
-                        'jam_absen' => '06:30:00',
-                        'sesi' => $sesi1,
-                    ]);
-                    echo json_encode(['message' => 'Token sesi 1 berhasil disimpan']);
-                }
-            } elseif ($current_time >= $jam2) {
-                // Cek token sudah ada untuk sesi 2
-                if ($this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'sesi' => $sesi2])->num_rows() > 0) {
-                    echo json_encode(['message' => 'Token sesi 2 sudah dibuat sebelumnya']);
+        // UNTUK PENGUJIAN: Hapus tanda komentar di bawah ini untuk mencoba jam tertentu
+        $current_time = '11:30:00';
 
-                    return;
-                } else {
-                    // Simpan token untuk sesi 2
-                    $this->db->insert('tbl_token_absen_siswa', [
-                        'token' => $token,
-                        'tanggal_absen' => date('Y-m-d'),
-                        'jam_absen' => '14:45:00',
-                        'sesi' => $sesi2,
-                    ]);
-                    echo json_encode(['message' => 'Token sesi 2 berhasil disimpan']);
-                }
+        // Ambil tanggal hari ini
+        $tanggal = date('Y-m-d');
+
+        // Deteksi nama hari berdasarkan tanggal
+        $hari = date('l', strtotime($tanggal));
+
+        // Ubah menjadi nama hari Indonesia
+        switch ($hari) {
+            case 'Sunday':    $hari = 'Minggu';
+                break;
+            case 'Monday':    $hari = 'Senin';
+                break;
+            case 'Tuesday':   $hari = 'Selasa';
+                break;
+            case 'Wednesday': $hari = 'Rabu';
+                break;
+            case 'Thursday':  $hari = 'Kamis';
+                break;
+            case 'Friday':    $hari = 'Jumat';
+                break;
+            case 'Saturday':  $hari = 'Sabtu';
+                break;
+        }
+
+        // Tentukan batas jam generate token untuk setiap sesi
+        if ($hari == 'Jumat') {
+            if ($current_time >= '04:30:00' && $current_time < '09:00:00') {
+                $sesi = 'sesi1';
+            } elseif ($current_time >= '09:00:00' && $current_time < '23:59:59') {
+                $sesi = 'sesi2';
             } else {
-                echo json_encode(['message' => 'Token sudah dibuat sebelumnya']);
+                $this->session->set_flashdata('notifikasi', '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Tidak bisa membuat token di luar jam sesi.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>');
+                redirect('absen_siswa/admin');
             }
         } else {
-            echo json_encode(['message' => 'Token tidak ditemukan']);
+            if ($current_time >= '04:30:00' && $current_time < '09:00:00') {
+                $sesi = 'sesi1';
+            } elseif ($current_time >= '14:45:00' && $current_time <= '23:59:59') {
+                $sesi = 'sesi2';
+            } else {
+                $this->session->set_flashdata('notifikasi', '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Tidak bisa membuat token di luar jam sesi.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>');
+                redirect('absen_siswa/admin');
+            }
+        }
+
+        // Tentukan jam absen sesuai sesi
+        if ($hari == 'Jumat') {
+            if ($sesi == 'sesi1') {
+                $jam_absen = '06:30:00';
+            } elseif ($sesi == 'sesi2') {
+                $jam_absen = '11:15:00';
+            }
+        } else {
+            if ($sesi == 'sesi1') {
+                $jam_absen = '06:30:00';
+            } elseif ($sesi == 'sesi2') {
+                $jam_absen = '14:45:00';
+            }
+        }
+
+        $cek_token = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => $tanggal, 'token' => $token, 'sesi' => $sesi])->row_array();
+
+        if ($cek_token) {
+            $this->session->set_flashdata('notifikasi', '
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    Token untuk sesi '.$sesi.' sudah ada.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>');
+            redirect('absen_siswa/admin');
+        } else {
+            $data = [
+                'token' => $token,
+                'tanggal_absen' => $tanggal,
+                'jam_absen' => $jam_absen,
+                'sesi' => $sesi,
+            ];
+            $this->db->insert('tbl_token_absen_siswa', $data);
+            $this->session->set_flashdata('notifikasi', '
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Token berhasil disimpan.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>');
+            redirect('absen_siswa/admin');
         }
     }
 
@@ -843,7 +1072,7 @@ class Absen_siswa extends CI_Controller
 
     public function download_kartu()
     {
-        $data['title'] = 'DOWNLOAD KARTU';
+        $data['title'] = 'Download Kartu';
         $this->load->view('absen_siswa/download_kartu', $data);
     }
 
@@ -851,6 +1080,7 @@ class Absen_siswa extends CI_Controller
     {
         $nisn = $this->input->post('nisn');
         $tgl_lahir = $this->input->post('tgl_lahir');
+        $tgl_lahir_formatted = date('dmY', strtotime($tgl_lahir));
         // Jika NISN diberikan, generate PDF kartu identitas
         if ($nisn) {
             $siswa = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $nisn])->row_array();
@@ -864,7 +1094,7 @@ class Absen_siswa extends CI_Controller
                 ');
                 redirect('absen_siswa/download_kartu');
             } else {
-                if ($siswa['tanggal_lahir'] != $tgl_lahir) {
+                if ($siswa['tanggal_lahir'] != $tgl_lahir_formatted) {
                     $this->session->set_flashdata('notifikasi', '
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             Tanggal lahir tidak sesuai.
@@ -966,12 +1196,15 @@ class Absen_siswa extends CI_Controller
                     }
                 }
             }
+        } else {
+            $this->session->set_flashdata('notifikasi', '
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    NISN tidak ditemukan.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            ');
+            redirect('absen_siswa/download_kartu');
         }
-
-        // Tampilkan halaman list siswa
-        $data['title'] = 'Buat Kartu Identitas Siswa';
-        $data['siswa'] = $this->db->get('tbl_data_siswa_poe_ibu')->result_array();
-        $this->load->view('absen_siswa/buat_kartu_identitas', $data);
     }
 
     public function ganti_foto()
@@ -1069,5 +1302,60 @@ class Absen_siswa extends CI_Controller
             $this->db->where('id_siswa', $id_siswa);
             $this->db->update('tbl_absen_siswa');
         }
+    }
+
+    public function sholat()
+    {
+        $data['title'] = 'Absen Sholat';
+        $token = $this->input->get('token');
+        $nisn = $this->input->get('nisn');
+        $cek_nisn = $this->db->get_where('tbl_data_siswa_poe_ibu', ['nisn' => $nisn])->row_array();
+        $cek_token = $this->db->get_where('tbl_token_absen_siswa', ['tanggal_absen' => date('Y-m-d'), 'token' => $token])->row_array();
+
+        $sesi = $cek_token['sesi'] ?? null;
+        // Ambil jam real-time saat ini
+        // $current_time = date('H:i:s');
+
+        // UNTUK PENGUJIAN: Hapus tanda komentar di bawah ini untuk mencoba jam tertentu
+        $current_time = '11:30:00';
+
+        if ($cek_token) {
+            if ($cek_nisn) {
+                $cek_petugas = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                if (!$cek_petugas) {
+                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time < '14:25:00') {
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } elseif ($sesi == 'sesi2' && $current_time >= '12:45:00') {
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } else {
+                        $data['absen'] = ['modal' => 'show_close'];
+                    }
+                } else {
+                    if ($sesi == 'sesi1' && $current_time >= '04:30:00' && $current_time < '14:25:00') {
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } elseif ($sesi == 'sesi2' && $current_time >= '12:45:00') {
+                        $data['petugas'] = $this->db->get_where('tbl_log_petugas', ['token' => $token, 'tanggal' => date('Y-m-d'), 'sesi' => $sesi, 'nisn' => $nisn])->row_array();
+                        $data['detail_petugas'] = $cek_nisn;
+                    } else {
+                        $data['absen'] = ['modal' => 'show_close'];
+                    }
+                }
+            } else {
+                $this->session->set_flashdata('notifikasi', '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Data siswa tidak ditemukan.
+                    </div>
+                ');
+                redirect('absen_siswa/index');
+            }
+        } else {
+            $data['absen'] = ['modal' => 'show_close'];
+        }
+
+        $data['detail_absen'] = ['token' => $token, 'nisn' => $nisn, 'sesi' => $sesi];
+        $this->load->view('absen_siswa/absen_sholat', $data);
     }
 }

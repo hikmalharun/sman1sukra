@@ -82,7 +82,6 @@
               <?php } else { ?>
               <button class="btn btn-outline-info float-end mb-3"><i class="bi bi-input-cursor"></i> Masukan NISN</button>
               <?php } ?>
-              <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#staticRekap"><i class="bi bi-arrow-down-up"></i> Rekapitulasi</button>
             </div>
             <div class="col-md-12">
               <div class="table-responsive">
@@ -154,6 +153,7 @@
     </div>
   </div>
 </div>
+<!-- <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#staticRekap"><i class="bi bi-arrow-down-up"></i> Rekapitulasi</button> -->
 <!-- Modal -->
 <div class="modal fade" id="staticRekap" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
